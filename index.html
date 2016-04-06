@@ -44,10 +44,11 @@
 	<body ng-controller="ReportsController">
 	<d2-header-bar class="noprint"></d2-header-bar>
 	<br/><br/>
-	<h1 align="center">MMR REPORTS</h1>
+	<h1 align="center">MMR REPORT</h1>
 	<span align="center" ng-repeat = "section in mmrDataSet.sections">
 		<h3>{{section.name}}</h3>
-		<img src="http://www.grameen-info.org/wp-content/uploads/2014/12/Monthly-Reports.png"/>
+		<!--<img src="http://www.grameen-info.org/wp-content/uploads/2014/12/Monthly-Reports.png"/>-->
+		<img ng-src=" {{ section.charts.href }}" />
 		</br>
 		{{section.dataElements[0].name}}:
 		<textarea rows="5" cols="100"></textarea>

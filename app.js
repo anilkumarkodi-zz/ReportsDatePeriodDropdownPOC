@@ -9,6 +9,7 @@ var ApiUrl = dhisUrl + '/api';
 Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', function(userService, DataSetService, $scope, DataVizObjectService, Config) {
     var user;
     $scope.mmrDataSet = {}
+    $scope.mmrDataVizObjects = []
     var result = {}
 
     var getMMRDataSet = function(dataSets) {
@@ -23,12 +24,14 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
           DataVizObjectService.getDataVizObjects(user)
             .then(function(dataVizObjects) {
                 _.map(dataVizObjects, function(map) {
+                    $scope.mmrDataVizObjects.push(map);
                     console.log(map.name, dataVizObjects.length);
                 })
             });
 
-          DataSetService.getDataSet(getMMRDataSet(user.project.dataSets).id)
+          DataSetService.getDataSet(getMMRDataSet(user.project.dataSets).id, $scope.mmrDataVizObjects)
             .then(function(dataset) {
+                console.log(dataset);
                 return $scope.mmrDataSet = dataset;
             });
       });
