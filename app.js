@@ -6,24 +6,31 @@ else
     dhisUrl= "http://localhost:8000";
 var ApiUrl = dhisUrl + '/api';
 
-Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'Config', function(userService, DataSetService, $scope, Config){
+Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', function(userService, DataSetService, $scope, DataVizObjectService, Config) {
     var user;
     $scope.mmrDataSet = {}
-    var result ={}
+    var result = {}
 
-    var getMMRDataSet = function(dataSets){
-        return _.filter(dataSets, function(dataSet){
+    var getMMRDataSet = function(dataSets) {
+        return _.filter(dataSets, function(dataSet) {
             return dataSet.name.startsWith(Config.dataSetObjectName)
-        })[0];
+        })[ 0 ];
     };
 
-    userService.getUser()
-        .then(function(user){
-            user = user;
-            DataSetService.getDataSet(getMMRDataSet(user.project.dataSets).id)
-              .then(function(dataset){
-                  return $scope.mmrDataSet = dataset;
+    userService.getLoggedInUser()
+      .then(function(user) {
+          $scope.user = user;
+          DataVizObjectService.getDataVizObjects(user)
+            .then(function(dataVizObjects) {
+                _.map(dataVizObjects, function(map) {
+                    console.log(map.name, dataVizObjects.length);
+                })
             });
-        });
 
-}]);
+          DataSetService.getDataSet(getMMRDataSet(user.project.dataSets).id)
+            .then(function(dataset) {
+                return $scope.mmrDataSet = dataset;
+            });
+      });
+
+    } ]);
