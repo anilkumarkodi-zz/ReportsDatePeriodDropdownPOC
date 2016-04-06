@@ -6,10 +6,24 @@ else
     dhisUrl= "http://localhost:8000";
 var ApiUrl = dhisUrl + '/api';
 
-Reports.controller('ReportsController',['UserService', 'DataSetService', function(userService, DataSetService){
+Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'Config', function(userService, DataSetService, $scope, Config){
+    var user;
+    $scope.mmrDataSet = {}
+    var result ={}
+
+    var getMMRDataSet = function(dataSets){
+        return _.filter(dataSets, function(dataSet){
+            return dataSet.name.startsWith(Config.dataSetObjectName)
+        })[0];
+    };
+
     userService.getUser()
         .then(function(user){
-            console.log(user);
+            user = user;
+            DataSetService.getDataSet(getMMRDataSet(user.project.dataSets).id)
+              .then(function(dataset){
+                  return $scope.mmrDataSet = dataset;
+            });
         });
-    var dataset = DataSetService.getDataSet("IJqIv106lrn")
+
 }]);

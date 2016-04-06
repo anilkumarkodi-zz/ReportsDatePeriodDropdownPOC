@@ -17,7 +17,6 @@ Reports.service("DataSetService", ['$http','DataEntrySectionService','DataElemen
                 })));
             };
             dataSet.isResolved = getSections();
-            console.log(dataSet)
             return dataSet;
         };
         var successPromise = function(response){
