@@ -6,6 +6,10 @@ else
     dhisUrl= "http://localhost:8000";
 var ApiUrl = dhisUrl + '/api';
 
-Reports.controller('ReportsController',['DataSetService', function(DataSetService){
-  var dataset = DataSetService.getDataSet("IJqIv106lrn")
+Reports.controller('ReportsController',['UserService', 'DataSetService', function(userService, DataSetService){
+    userService.getUser()
+        .then(function(user){
+            console.log(user);
+        });
+    var dataset = DataSetService.getDataSet("IJqIv106lrn")
 }]);
