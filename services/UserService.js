@@ -1,5 +1,5 @@
 Reports.service('UserService',['$http','Config', function($http, config){
-   this.getUser = function(){
+   this.getLoggedInUser = function(){
 
        var failurePromise = function(){
            alert('Fetching data failed');

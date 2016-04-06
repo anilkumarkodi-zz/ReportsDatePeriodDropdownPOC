@@ -6,10 +6,19 @@ else
     dhisUrl= "http://localhost:8000";
 var ApiUrl = dhisUrl + '/api';
 
-Reports.controller('ReportsController',['UserService', 'DataSetService', function(userService, DataSetService){
-    userService.getUser()
+Reports.controller('ReportsController',['UserService', 'DataSetService', 'DataVizObjectService', '$scope', function(userService, DataSetService, DataVizObjectService, $scope){
+    userService.getLoggedInUser()
         .then(function(user){
-            console.log(user);
+            $scope.user = user;
+            DataVizObjectService.getDataVizObjects(user)
+                .then(function(dataVizObjects){
+                    _.map(dataVizObjects, function(map){
+                        console.log(map.name, dataVizObjects.length);
+                    })
+
+                })
         });
+
     var dataset = DataSetService.getDataSet("IJqIv106lrn")
+
 }]);
