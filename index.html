@@ -44,14 +44,38 @@
 	<body ng-controller="ReportsController">
 	<d2-header-bar class="noprint"></d2-header-bar>
 	<br/><br/>
-	<h1 align="center">MMR REPORT</h1>
-	<span align="center" ng-repeat = "section in mmrDataSet.sections">
-		<h3>{{section.name}}</h3>
-		<!--<img src="http://www.grameen-info.org/wp-content/uploads/2014/12/Monthly-Reports.png"/>-->
-		<img ng-src=" {{ section.charts.href }}" />
-		</br>
-		{{section.dataElements[0].name}}:
+	<h1 align="center">MMR REPORTS</h1>
+
+	<h4>Select a Report</h4>
+	<select ng-model="month" ng-options="currentMonth for currentMonth in months">
+	<option value="" disabled selected>Select a Month</option>
+	</select>
+	<select ng-model="year"  ng-options="year for year in years">
+		<option value="" disabled selected>Select a Year</option>
+	</select>
+	<button ng-click="getReport()">
+		Get Report
+	</button>
+
+	<span ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
+		<br/>
+		<h3 align="center">{{section.name}}</h3>
+
+		<span ng-repeat = "chart in section.charts">
+				<img ng-src=" {{ chart.href }} " width="50%" height="50%"/>
+		</span>
+
+
+		<span ng-repeat = "reportTable in section.reportTables">
+			<a ng-href="{{ reportTable.href }}">ReportTable</a>
+			<div ng-bind-html = "{{ reportTable.href }}"></div>
+		</span>
+
+		<br/>
+			{{section.dataElements[0].name}}
+		<br/>
 		<textarea rows="5" cols="100"></textarea>
 	</span>
+
 	</body>
 </html>

@@ -9,7 +9,6 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
         var getCharts = function(){
             var chartsSuccessPromise = function(response){
                 dataVizObjects.push(response.data.charts)
-                console.log(response.data);
             };
             return $http.get(ApiUrl + "/charts.json?filter=name:ilike:" + config.dataVizObjectNamePrefix + "_" + user.mission.name + "_" + user.project.name)
                 .then(chartsSuccessPromise, failurePromise);

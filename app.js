@@ -11,6 +11,21 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
     $scope.mmrDataSet = {}
     $scope.mmrDataVizObjects = []
     var result = {}
+    $scope.months=['January', 'February', 'March', 'April' ];
+    $scope.years= [];
+    $scope.month=null;
+    $scope.year=null;
+
+    $scope.isShow=false;
+    $scope.getReport = function(){
+        console.log($scope.month)
+        console.log($scope.year)
+        $scope.isShow=true;
+    };
+
+    for(var i= new Date().getFullYear() ;i>=2000;i--) {
+        $scope.years.push(i);
+    }
 
     var getMMRDataSet = function(dataSets) {
         return _.filter(dataSets, function(dataSet) {
@@ -24,8 +39,9 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
           DataVizObjectService.getDataVizObjects(user)
             .then(function(dataVizObjects) {
                 _.map(dataVizObjects, function(map) {
+                    //console.log(map);
                     $scope.mmrDataVizObjects.push(map);
-                    console.log(map.name, dataVizObjects.length);
+                    //console.log(map.name, dataVizObjects.length);
                 })
             });
 
@@ -35,5 +51,4 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                 return $scope.mmrDataSet = dataset;
             });
       });
-
     } ]);
