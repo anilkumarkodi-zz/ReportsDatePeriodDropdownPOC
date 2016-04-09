@@ -44,18 +44,22 @@
 	<body ng-controller="ReportsController">
 	<d2-header-bar class="noprint"></d2-header-bar>
 	<br/><br/>
-	<h1 align="center">MMR REPORTS</h1>
+	<h1 align="center">REPORT</h1>
 
-	<h4>Select a Report</h4>
-	<select ng-model="month.key" ng-options="currentMonth for currentMonth in months">
-	<option value="" disabled selected>Select a Month</option>
-	</select>
-	<select ng-model="year"  ng-options="year for year in years">
-		<option value="" disabled selected>Select a Year</option>
-	</select>
-	<button ng-click="getReport()">
-		Get Report
-	</button>
+	<h4>Select a Template</h4>
+	<template-select></template-select>
+	<br/><br/>
+
+	<!--<div ng-if="showTimePeriod">-->
+		<h4>Select Time Period</h4>
+		<month-select></month-select>
+		<year-select></year-select>
+
+		<br/><br/>
+		<button ng-click="getReport()">
+			Get Report
+		</button>
+	<!--</div>-->
 
 	<span ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
 		<br/>
