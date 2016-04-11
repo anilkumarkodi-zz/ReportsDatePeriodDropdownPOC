@@ -49,42 +49,44 @@
 	</head>
 
 	<body ng-controller="ReportsController" class="report-body-wrapper">
-		<d2-header-bar class="noprint"></d2-header-bar>
-		<br/><br/>
-		<h1 align="center">REPORT</h1>
-        <div class="header-section-wrapper">
-            <h4 class="f-weight-900">Select a Template</h4>
-            <template-select></template-select>
-            <div ng-if="showMonthlyTimePeriod" class="period-selection-wrapper">
-                <h4 class="f-weight-900">Select Time Period</h4>
-                <month-select></month-select>
-                <year-select></year-select>
-                <br/><br/>
-                <button class="btn btn-primary align-right" ng-click="getReport()">
-                    Get Report
-                </button>
+        <div class="header-wrapper">
+            <d2-header-bar class="noprint"></d2-header-bar>
+            <h1 align="center">REPORT</h1>
+            <div class="header-section-wrapper">
+                <h4 class="f-weight-900">Select a Template</h4>
+                <template-select></template-select>
+                <div ng-if="showMonthlyTimePeriod" class="period-selection-wrapper">
+                    <h4 class="f-weight-900">Select Time Period</h4>
+                    <month-select></month-select>
+                    <year-select></year-select>
+                    <br/><br/>
+                    <button class="btn btn-primary align-right" ng-click="getReport()">
+                        Get Report
+                    </button>
+                </div>
             </div>
         </div>
 
 
-		<span ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
-			<br/>
-			<h3 align="center">{{section.name}}</h3>
+        <div>
+            <div class="section-wrapper" ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
+                <h3 class="f-weight-900 text-align-left">{{section.name}}</h3>
 
-			<span ng-repeat = "chart in section.charts">
-					<img ng-src=" {{ chart.href }} " width="50%" height="50%"/>
-			</span>
+                <span ng-repeat = "chart in section.charts">
+                        <img ng-src=" {{ chart.href }} " width="50%" height="50%"/>
+                </span>
 
-			<br/><br/>
+                <span ng-repeat = "reportTable in section.reportTables">
+                    <a ng-href="{{ reportTable.href }}">ReportTable</a>
+                    <div ng-bind-html = "reportTable.href"></div>
+                </span>
 
-			<span ng-repeat = "reportTable in section.reportTables">
-				<display-report report-data="reportTable.jsonData"></display-report>
-			</span>
-			<br/>
-					{{section.dataElements[0].name}}
-			<br/>
-			<textarea rows="5" cols="100"></textarea>
-		</span>
+                <div class="form-group report-content">
+                    <label>{{section.dataElements[0].name}}</label>
+                    <textarea class="form-control" rows="5" cols="10" placeholder="Write your narrative here....."></textarea>
+                </div>
+            </div>
+        </div>
 
         <div class="no-data-wrapper">
             <h3>No report is selected yet</h3>
