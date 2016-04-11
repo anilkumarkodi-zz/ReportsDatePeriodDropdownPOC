@@ -1,0 +1,53 @@
+.report-body-wrapper {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.report-body-wrapper h4 {
+    margin-bottom: 25px;
+}
+
+.header-section-wrapper {
+    width: 400px;
+}
+
+.period-selection-wrapper {
+    margin-top: 30px;
+}
+
+.period-selection-wrapper select {
+    width: 48%;
+    display: inline-block;
+}
+
+.period-selection-wrapper .first-child {
+    margin-right: 3%;
+}
+
+.no-data-wrapper {
+    width: 700px;
+    height: 160px;
+    margin: 0 auto;
+    margin-top: 100px;
+    border: 3px dashed #A4A4A4;
+}
+
+.no-data-wrapper h3 {
+    text-align: center;
+    font-weight: 900;
+    margin-top: 60px;
+    color: #A4A4A4;
+}
+
+
+/* Font Weight */
+
+.f-weight-900 {
+    font-weight: 900;
+}
+
+/* commons */
+
+.align-right {
+    float: right;
+}
