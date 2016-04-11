@@ -11,9 +11,14 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
     $scope.selectedDataSet= null;
     $scope.getTimePeriod = function(dataSet){
         if(dataSet != undefined){
+            $scope.isShow = false;
             $scope.selectedDataSet=dataSet;
             if(dataSet.name.indexOf("MMR") > -1)
-                $scope.showMonthlyTimePeriod=true;
+                $scope.showMonthlyTimePeriod = true;
+            else {
+                $scope.showMonthlyTimePeriod = false;
+                alert('Weekly charts available post pilot');
+            }
         }
     };
 
@@ -42,7 +47,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                       });
                 }
                 else
-                    alert('No data charts configured for selected period');
+                    alert('No data charts configured for selected template');
             };
 
             userService.getLoggedInUser()

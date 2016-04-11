@@ -23,6 +23,19 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
                 .then(reportTablesSuccessPromise, failurePromise);
         };
 
+        var getReportTablesJson = function(dataVizObjects){
+           _.map(dataVizObjects, function(dataObject, index) {
+                dataObject.jsonData = {};
+                var reportTablesJsonSuccessPromise = function(response){
+                    dataVizObjects[index].jsonData = response.data;
+                };
+               if( !(_.isEmpty(dataObject)) )
+                   return $http.get(dataObject.href.replace("8080","8000")+ "/data.json")
+                     .then(reportTablesJsonSuccessPromise, failurePromise);
+            })
+            return dataVizObjects;
+        };
+
         var promises = [];
         promises.push(getCharts());
         promises.push(getReportTables());
@@ -30,7 +43,8 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
         return Promise.all(promises)
             .then(function(){
                 return _.flatten(dataVizObjects);
-            });
+            })
+          .then(getReportTablesJson);
 
     };
 }]);
