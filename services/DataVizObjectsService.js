@@ -3,14 +3,14 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
         alert('Fetching data failed');
     };
 
-    this.getDataVizObjects = function(user){
+    this.getDataVizObjects = function(user, dataSetName){
         var dataVizObjects=[];
 
         var getCharts = function(){
             var chartsSuccessPromise = function(response){
                 dataVizObjects.push(response.data.charts)
             };
-            return $http.get(ApiUrl + "/charts.json?filter=name:ilike:" + config.dataVizObjectNamePrefix + "_" + user.mission.name + "_" + user.project.name)
+            return $http.get(ApiUrl + "/charts.json?filter=name:ilike:" + dataSetName)
                 .then(chartsSuccessPromise, failurePromise);
         };
 
@@ -19,7 +19,7 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
                 dataVizObjects.push(response.data.reportTables)
             };
 
-            return $http.get(ApiUrl + "/reportTables.json?filter=name:ilike:" + config.dataVizObjectNamePrefix + "_" + user.mission.name + "_" + user.project.name)
+            return $http.get(ApiUrl + "/reportTables.json?filter=name:ilike:" + dataSetName)
                 .then(reportTablesSuccessPromise, failurePromise);
         };
 
@@ -33,24 +33,4 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
             });
 
     };
-
-    this.getFilteredDataVizObjects = function(dataVizObjects, date) {
-        var filteredDataVizObjects  = []
-        var filterData = function() {
-            var filterSuccessPromise = function(response) {
-                if( !_.isEmpty(response.data) )
-                    filteredDataVizObjects.push(response.data);
-            };
-            return Promise.all(_.map(dataVizObjects, function(map) {
-                return $http.get(map.href.replace("8080","8000") + "?filter=periods.code:eq:" + date)
-                  .then(filterSuccessPromise, failurePromise);
-            }));
-        };
-
-        return filterData()
-          .then(function(){
-              return _.flatten(filteredDataVizObjects);
-          });
-    };
-
 }]);

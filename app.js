@@ -8,49 +8,34 @@ var ApiUrl = dhisUrl + '/api';
 
 Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', function(userService, DataSetService, $scope, DataVizObjectService, Config) {
 
+    $scope.selectedDataSet= null;
     $scope.getTimePeriod = function(dataSet){
         if(dataSet != undefined){
-            console.log(dataSet)
-            if(dataSet.indexOf("MMR") > -1)
+            $scope.selectedDataSet=dataSet;
+            if(dataSet.name.indexOf("MMR") > -1)
                 $scope.showMonthlyTimePeriod=true;
         }
     };
 
     $scope.getReport = function(){
-        console.log("Selected TimePeriod", $scope.selectedYear+$scope.selectedMonth);
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
             $scope.mmrDataVizObjects = []
-            $scope.mmrFilteredDataVizObjects = []
-
             $scope.isShow = true;
-            var getMMRDataSet = function(dataSets) {
-                return _.filter(dataSets, function(dataSet) {
-                    return dataSet.name.startsWith(Config.dataSetObjectNamePrefix)
-                })[ 0 ];
-            };
 
             var getDataVizObjects = function(user) {
                 $scope.user = user;
-                return DataVizObjectService.getDataVizObjects(user)
+                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.name)
                   .then(function(dataVizObjects) {
                       $scope.mmrDataVizObjects = dataVizObjects;
                       console.log("All dataviz", $scope.mmrDataVizObjects);
                   })
             };
 
-            var filterDataVizObjects = function() {
-                return DataVizObjectService.getFilteredDataVizObjects($scope.mmrDataVizObjects, $scope.selectedYear + $scope.selectedMonth)
-                  .then(function(dataVizObjects) {
-                      $scope.mmrFilteredDataVizObjects = dataVizObjects;
-                      console.log("Filtered dataviz", $scope.mmrFilteredDataVizObjects);
-                  });
-            };
-
-            var assignFilteredDataVizObjects = function() {
-                if( $scope.mmrFilteredDataVizObjects.length != 0 ) {
-                    return DataSetService.getDataSet(getMMRDataSet($scope.user.project.dataSets).id, $scope.mmrFilteredDataVizObjects)
+            var assignDataVizObjectsToDataSet = function() {
+                if( $scope.mmrDataVizObjects.length != 0 ) {
+                    return DataSetService.getDataSet($scope.selectedDataSet.id, $scope.mmrDataVizObjects)
                       .then(function(dataset) {
                           console.log("DataSet", dataset)
                           return $scope.mmrDataSet = dataset;
@@ -62,8 +47,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
 
             userService.getLoggedInUser()
               .then(getDataVizObjects)
-              .then(filterDataVizObjects)
-              .then(assignFilteredDataVizObjects);
+              .then(assignDataVizObjectsToDataSet);
         }
         else {
             alert('Please select Time Period');
@@ -106,26 +90,6 @@ Reports.directive('yearSelect',function(){
             for(var i= new Date().getFullYear() ;i>=2000;i--) {
                 scope.years.push(i);
             }
-        }]
-    }
-});
-
-Reports.directive('templateSelect',function(){
-    return {
-        restrict: 'E',
-        replace: true,
-        template: '<select  ng-model="dataSet" ng-change="getTimePeriod(dataSet)" required><option value="" disabled selected>Select a Template</option><option ng-repeat="dataSet in dataSets" value="{{dataSet.name}}">{{dataSet.name}}</option></select>',
-        controller: ["UserService", "$scope", "$element", "$attrs", 'Config', function (userService, scope, element, attrs, Config) {
-            var getMMRDataSet = function(dataSets) {
-                return _.filter(dataSets, function(dataSet) {
-                    return dataSet.name.startsWith(Config.dataSetObjectNamePrefix);
-                })[ 0 ];
-            };
-            scope.dataSets=[];
-            userService.getLoggedInUser()
-              .then(function(user){
-                  scope.dataSets.push(getMMRDataSet(user.project.dataSets));
-              });
         }]
     }
 });

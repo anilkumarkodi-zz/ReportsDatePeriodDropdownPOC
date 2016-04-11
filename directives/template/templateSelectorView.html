@@ -1,0 +1,5 @@
+<span ng-controller="templateSelectorCtrl">
+  <select ng-options="dataSet.name for dataSet in dataSets" ng-model="dataSet" ng-change="getTimePeriod(dataSet)">
+    <option value="" disabled>Select Template</option>
+  </select>
+</span>
