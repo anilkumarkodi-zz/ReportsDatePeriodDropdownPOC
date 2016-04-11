@@ -23,6 +23,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
     };
 
     $scope.getReport = function(){
+        $(".no-data-wrapper").hide();
+        
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
@@ -66,7 +68,7 @@ Reports.directive('monthSelect',function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<select ng-model="$parent.selectedMonth" required><option value="" disabled selected>Select a Month</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
+        template: '<select class="form-control first-child" ng-model="$parent.selectedMonth" required><option value="" disabled selected>Select a Month</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.months = [];
             scope.months.push({value:"01", text:'January'});
@@ -89,7 +91,7 @@ Reports.directive('yearSelect',function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<select ng-model="$parent.selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
+        template: '<select class="form-control" ng-model="$parent.selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.years = [];
             for(var i= new Date().getFullYear() ;i>=2000;i--) {

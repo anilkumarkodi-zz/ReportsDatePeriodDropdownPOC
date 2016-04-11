@@ -18,6 +18,9 @@
 		<link rel="stylesheet" type="text/css" href="include/bootstrap-3.3.4/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="include/bootstrap-select/css/bootstrap-select.min.css">
 
+
+		<link rel="stylesheet" type="text/css" href="./main.css">
+
 		<!--DHIS related stuff-->
 		<script>
 			window.dhis2 = window.dhis2 || {};
@@ -45,23 +48,24 @@
 
 	</head>
 
-	<body ng-controller="ReportsController">
+	<body ng-controller="ReportsController" class="report-body-wrapper">
 		<d2-header-bar class="noprint"></d2-header-bar>
 		<br/><br/>
 		<h1 align="center">REPORT</h1>
-		<h4>Select a Template</h4>
-		<template-select></template-select>
-		<br/><br/>
+        <div class="header-section-wrapper">
+            <h4 class="f-weight-900">Select a Template</h4>
+            <template-select></template-select>
+            <div ng-if="showMonthlyTimePeriod" class="period-selection-wrapper">
+                <h4 class="f-weight-900">Select Time Period</h4>
+                <month-select></month-select>
+                <year-select></year-select>
+                <br/><br/>
+                <button class="btn btn-primary align-right" ng-click="getReport()">
+                    Get Report
+                </button>
+            </div>
+        </div>
 
-		<div ng-if="showMonthlyTimePeriod">
-			<h4>Select Time Period</h4>
-			<month-select></month-select>
-			<year-select></year-select>
-			<br/><br/>
-			<button ng-click="getReport()">
-				Get Report
-			</button>
-		</div>
 
 		<span ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
 			<br/>
@@ -81,6 +85,10 @@
 			<br/>
 			<textarea rows="5" cols="100"></textarea>
 		</span>
+
+        <div class="no-data-wrapper">
+            <h3>No report is selected yet</h3>
+        </div>
 
 	</body>
 </html>
