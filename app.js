@@ -1,4 +1,4 @@
-var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
+var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar', 'checklist-model']);
 var dhisUrl;
 if(window.location.href.includes("apps"))
     dhisUrl= window.location.href.split('api/apps/')[0] + '/';
@@ -7,14 +7,17 @@ else
 var ApiUrl = dhisUrl + '/api';
 
 Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', function(userService, DataSetService, $scope, DataVizObjectService, Config) {
-    $scope.getTimePeriod = function(){
-        if($scope.selectedTemplate != undefined){
-            console.log($scope.selectedTemplate)
-            $scope.showTimePeriod=true;
+
+    $scope.getTimePeriod = function(dataSet){
+        if(dataSet != undefined){
+            console.log(dataSet)
+            if(dataSet.indexOf("MMR") > -1)
+                $scope.showMonthlyTimePeriod=true;
         }
     };
 
     $scope.getReport = function(){
+        console.log("Selected TimePeriod", $scope.selectedYear+$scope.selectedMonth);
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
@@ -22,8 +25,6 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             $scope.mmrFilteredDataVizObjects = []
 
             $scope.isShow = true;
-
-            console.log($scope.selectedYear + $scope.selectedMonth);
             var getMMRDataSet = function(dataSets) {
                 return _.filter(dataSets, function(dataSet) {
                     return dataSet.name.startsWith(Config.dataSetObjectNamePrefix)
@@ -76,7 +77,7 @@ Reports.directive('monthSelect',function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<select ng-model="selectedMonth" required><option value="" disabled selected>Select a Month</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
+        template: '<select ng-model="$parent.selectedMonth" required><option value="" disabled selected>Select a Month</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.months = [];
             scope.months.push({value:"01", text:'January'});
@@ -99,7 +100,7 @@ Reports.directive('yearSelect',function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<select ng-model="selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-repeat="year in years">{{year}}</option></select>',
+        template: '<select ng-model="$parent.selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.years = [];
             for(var i= new Date().getFullYear() ;i>=2000;i--) {
@@ -113,7 +114,7 @@ Reports.directive('templateSelect',function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<select ng-model="selectedTemplate" ng-change="getTimePeriod()" required><option value="" disabled selected>Select a Template</option><option ng-repeat="set in dataSets" value="{{set.id}}">{{set.name}}</option></select>',
+        template: '<select  ng-model="dataSet" ng-change="getTimePeriod(dataSet)" required><option value="" disabled selected>Select a Template</option><option ng-repeat="dataSet in dataSets" value="{{dataSet.name}}">{{dataSet.name}}</option></select>',
         controller: ["UserService", "$scope", "$element", "$attrs", 'Config', function (userService, scope, element, attrs, Config) {
             var getMMRDataSet = function(dataSets) {
                 return _.filter(dataSets, function(dataSet) {

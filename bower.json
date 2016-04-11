@@ -1,5 +1,5 @@
 {
-  "name": "dhis_tally_sheets",
+  "name": "Reports",
   "description": "",
   "main": "",
   "moduleType": [],
@@ -13,6 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "lodash": "~4.3.0"
+    "lodash": "~4.3.0",
+    "checklist-model" : "~0.2.4"
   }
 }
