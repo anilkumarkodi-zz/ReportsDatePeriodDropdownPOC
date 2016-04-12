@@ -3,26 +3,12 @@ Reports.service("DataEntrySectionService", ['$http','DataElementService', functi
         return {isError: true, status: response.status, statusText: response.statusText}
     };
 
-    var Section = function(data, dataVizObjects){
+    var Section = function(data){
         var section = {};
         section.name = data.name;
         section.id = data.id;
         section.dataElements = new Array(data.dataElements.length);
-        section.charts=[];
-        section.reportTables=[];
 
-        _.filter(dataVizObjects, function(dataVizObject) {
-            if(( (dataVizObject.name).indexOf(section.name) > -1 )) {
-                if((dataVizObject.href).indexOf("charts") > -1 ) {
-                    dataVizObject.href = dataVizObject.href + "/data";
-                    section.charts.push(dataVizObject);
-                }
-                else {
-                    dataVizObject.href = dataVizObject.href + "/data.html";
-                    section.reportTables.push(dataVizObject);
-                }
-            }
-        })[ 0 ];
         var promises =_.map(data.dataElements, function(incompleteDataElement, index) {
             return DataElementService.getDataElement(incompleteDataElement)
                 .then(function (dataElement) {

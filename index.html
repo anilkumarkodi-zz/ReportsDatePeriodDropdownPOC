@@ -76,10 +76,9 @@
                         <img ng-src=" {{ chart.href }} " width="50%" height="50%"/>
                 </span>
 
-                <span ng-repeat = "reportTable in section.reportTables">
-                    <a ng-href="{{ reportTable.href }}">ReportTable</a>
-                    <div ng-bind-html = "reportTable.href"></div>
-                </span>
+								<span ng-repeat = "reportTable in section.reportTables">
+ 									<display-report report-data="reportTable.jsonData"></display-report>
+ 								</span>
 
                 <div class="form-group report-content">
                     <label>{{section.dataElements[0].name}}</label>

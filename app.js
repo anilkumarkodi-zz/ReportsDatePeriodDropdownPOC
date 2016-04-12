@@ -40,12 +40,35 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                   })
             };
 
+            var processSection = function(dataSection){
+                dataSection.charts = [];
+                dataSection.reportTables = [];
+                return _.filter($scope.mmrDataVizObjects, function(dataVizObject) {
+                    if(( (dataVizObject.name).indexOf(dataSection.name) > -1 )) {
+                        if((dataVizObject.href).indexOf("charts") > -1 ) {
+                            dataVizObject.href = dataVizObject.href + "/data";
+                            dataSection.charts.push(dataVizObject);
+                        }
+                        else {
+                            dataVizObject.href = dataVizObject.href + "/data.html";
+                            dataSection.reportTables.push(dataVizObject);
+                        }
+                    }
+                    return dataSection;
+                })[ 0 ];
+            };
+
             var assignDataVizObjectsToDataSet = function() {
                 if( $scope.mmrDataVizObjects.length != 0 ) {
-                    return DataSetService.getDataSet($scope.selectedDataSet.id, $scope.mmrDataVizObjects)
+                    return DataSetService.getDataSet($scope.selectedDataSet.id)
                       .then(function(dataset) {
-                          console.log("DataSet", dataset)
-                          return $scope.mmrDataSet = dataset;
+                          return dataset.isResolved.then(function(){
+                              _.map(dataset.sections, function(dataSection) {
+                                  processSection(dataSection);
+                              });
+                              console.log("Selected DataSet", dataset)
+                              $scope.mmrDataSet = dataset;
+                          });
                       });
                 }
                 else

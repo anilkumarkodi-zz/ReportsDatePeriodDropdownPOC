@@ -27,12 +27,20 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
            _.map(dataVizObjects, function(dataObject, index) {
                 dataObject.jsonData = {};
                 var reportTablesJsonSuccessPromise = function(response){
-                    dataVizObjects[index].jsonData = response.data;
+                    if((dataVizObjects[index].href).indexOf("charts")>-1)
+                        dataVizObjects[index].jsonData=dataVizObjects[index].href+"/data";
+                    else
+                        dataVizObjects[index].jsonData = response.data;
                 };
-               if( !(_.isEmpty(dataObject)) )
-                   return $http.get(dataObject.href.replace("8080","8000")+ "/data.json")
-                     .then(reportTablesJsonSuccessPromise, failurePromise);
-            })
+                var dataObjectUrl=ApiUrl;
+                if((dataObject.href).indexOf("charts")>-1)
+                    dataObjectUrl=dataObjectUrl+"/charts/"+dataObject.id+"/data.json";
+                else
+                    dataObjectUrl=dataObjectUrl+"/reportTables/"+dataObject.id+"/data.json";
+
+                return $http.get(dataObjectUrl)
+                  .then(reportTablesJsonSuccessPromise, failurePromise);
+            });
             return dataVizObjects;
         };
 

@@ -1,6 +1,6 @@
-Reports.service("DataSetService", ['$http','DataEntrySectionService','DataElementService', function ($http, DataEntrySectionService, DataElementService) {
-    var datasets = [];
-    this.getDataSet = function(dataSetId, dataVizObjects){
+Reports.service("DataSetService", ['$http','DataEntrySectionService', function ($http, DataEntrySectionService) {
+
+    this.getDataSet = function(dataSetId){
 
         var DataSet = function(data){
             var dataSet = {};
@@ -11,7 +11,7 @@ Reports.service("DataSetService", ['$http','DataEntrySectionService','DataElemen
 
             var getSections = function(){
                 return Promise.all(_.map(data.sections, (function(section, index){
-                    return DataEntrySectionService.getSection(section.id, dataVizObjects).then(function(section){
+                    return DataEntrySectionService.getSection(section.id).then(function(section){
                         dataSet.sections[index] =section
                     })
                 })));
