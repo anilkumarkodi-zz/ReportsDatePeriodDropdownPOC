@@ -85,7 +85,7 @@
                 <div class="form-group report-content">
                     <label>{{section.dataElements[0].name}}</label>
                     <span ng-repeat="dataElement in section.dataElements">
-                        <textarea class="form-control" rows="5" cols="10" ng-model="narratives[dataElement.id].value" placeholder="Write your narrative here....." ng-keyup="calculateHeight($event)"></textarea>
+                        <textarea class="form-control" rows="5" cols="10" ng-change="saveReport()" ng-model="narratives[dataElement.id].value" placeholder="Write your narrative here..." ng-keyup="calculateHeight($event)"></textarea>
                     </span>
                 </div>
             </div>
@@ -96,10 +96,6 @@
         </div>
 
         <div ng-show="reportShown" class="page-action-wrapper">
-            <button type="button" class="btn btn-primary" ng-click="saveReport()">
-                <span class="glyphicon glyphicon-floppy-disk"></span>
-                Save
-            </button>
             <button id="export" type="button" class="btn btn-primary">
                 <span class="glyphicon glyphicon-share"></span> Export
             </button>
