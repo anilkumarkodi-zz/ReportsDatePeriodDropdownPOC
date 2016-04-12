@@ -26,6 +26,15 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
         }
     };
 
+    $scope.calculateHeight = function (event) {
+        var textArea = event.target;
+
+        textArea.style.overflow = 'hidden';
+        textArea.style.height = 0;
+        textArea.style.height = textArea.scrollHeight + 'px';
+
+    };
+
     $scope.getReport = function(){
 
         $scope.noDataMessageShown = false;

@@ -51,6 +51,10 @@
     margin-bottom: 30px;
 }
 
+.report-content textarea {
+    min-height: 120px;
+}
+
 .section-wrapper {
     margin-bottom: 12vh;
 }
