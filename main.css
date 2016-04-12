@@ -67,6 +67,14 @@
     margin-bottom: 10px;
 }
 
+.chart-container {
+    width: 700px;
+    margin-right: 10px;
+    margin-bottom: 90px;
+    display: inline-block;
+    float: left;
+}
+
 /* Font Weight */
 
 .f-weight-900 {
