@@ -1,8 +1,8 @@
 <table  border="1">
   <tr>
-      <td ng-repeat="header in reportData.headers">{{header.name}}</td>
+    <td ng-repeat="header in reportData.headers" ng-hide="{{header.hidden}}">{{header.name}}</td>
   </tr>
   <tr ng-repeat="row in reportData.rows">
-    <td ng-repeat="value in row track by $index">{{value}}</td>
+    <td ng-repeat="value in row track by $index" ng-hide="{{reportData.headers[$index].hidden}}">{{value}}</td>
   </tr>
 </table>
