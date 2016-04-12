@@ -55,6 +55,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             userService.getLoggedInUser()
               .then(getDataVizObjects)
               .then(assignDataVizObjectsToDataSet);
+
+            $(".page-action-wrapper").show();
         }
         else {
             alert('Please select Time Period');

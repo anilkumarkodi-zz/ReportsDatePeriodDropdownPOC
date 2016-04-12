@@ -55,6 +55,18 @@
     margin-bottom: 12vh;
 }
 
+.page-action-wrapper {
+    height: 120px;
+    width: 120px;
+    position: fixed;
+    right: 100px;
+    bottom: 50px;
+}
+
+.page-action-wrapper button {
+    margin-bottom: 10px;
+}
+
 /* Font Weight */
 
 .f-weight-900 {
