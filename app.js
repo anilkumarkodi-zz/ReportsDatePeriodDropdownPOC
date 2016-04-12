@@ -48,12 +48,6 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                 NarrativeService.saveNarratives(Narratives_orig);
             }
             $scope.isShow = true;
-            var getMMRDataSet = function(dataSets) {
-                            return _.filter(dataSets, function(dataSet) {
-                                return dataSet.name.startsWith(Config.dataSetObjectNamePrefix)
-            //                    #TODO: make everything lower or upper case and then compare so that we have a case insensitive comparison.
-                            })[ 0 ];
-            };
             var getDataVizObjects = function(user) {
                 $scope.user = user;
                 return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code)
