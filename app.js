@@ -7,9 +7,13 @@ else
 var ApiUrl = dhisUrl + '/api';
 
 Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', function(userService, DataSetService, $scope, DataVizObjectService, Config) {
+    $scope.noDataMessageShown = true;
 
     $scope.selectedDataSet= null;
     $scope.getTimePeriod = function(dataSet){
+        $scope.reportShown = false;
+        $scope.noDataMessageShown = true;
+
         if(dataSet != undefined){
             $scope.isShow = false;
             $scope.selectedDataSet=dataSet;
@@ -23,7 +27,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
     };
 
     $scope.getReport = function(){
-        $(".no-data-wrapper").hide();
+
+        $scope.noDataMessageShown = false;
         
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
@@ -78,6 +83,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             userService.getLoggedInUser()
               .then(getDataVizObjects)
               .then(assignDataVizObjectsToDataSet);
+            $scope.reportShown = true;
         }
         else {
             alert('Please select Time Period');
