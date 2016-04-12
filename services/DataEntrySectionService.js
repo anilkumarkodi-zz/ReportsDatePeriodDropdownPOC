@@ -8,6 +8,7 @@ Reports.service("DataEntrySectionService", ['$http','DataElementService', functi
         section.name = data.name;
         section.id = data.id;
         section.dataElements = new Array(data.dataElements.length);
+        section.code=data.description;
 
         var promises =_.map(data.dataElements, function(incompleteDataElement, index) {
             return DataElementService.getDataElement(incompleteDataElement)

@@ -17,7 +17,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
         if(dataSet != undefined){
             $scope.isShow = false;
             $scope.selectedDataSet=dataSet;
-            if(dataSet.name.indexOf("MMR") > -1)
+            if( dataSet.code.startsWith(Config.dataSetMonthlyObjectCodePrefix) )
                 $scope.showMonthlyTimePeriod = true;
             else {
                 $scope.showMonthlyTimePeriod = false;
@@ -56,7 +56,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             };
             var getDataVizObjects = function(user) {
                 $scope.user = user;
-                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.name)
+                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code)
                   .then(function(dataVizObjects) {
                       $scope.mmrDataVizObjects = dataVizObjects;
                       console.log("All dataviz", $scope.mmrDataVizObjects);
@@ -67,7 +67,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                 dataSection.charts = [];
                 dataSection.reportTables = [];
                 return _.filter($scope.mmrDataVizObjects, function(dataVizObject) {
-                    if(( (dataVizObject.name).indexOf(dataSection.name) > -1 )) {
+                    if(( (dataVizObject.name).indexOf(dataSection.code) > -1 )) {
                         if((dataVizObject.href).indexOf("charts") > -1 ) {
                             dataVizObject.href = dataVizObject.href + "/data";
                             dataSection.charts.push(dataVizObject);

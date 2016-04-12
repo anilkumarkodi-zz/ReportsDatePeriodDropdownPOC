@@ -3,14 +3,14 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
         alert('Fetching data failed');
     };
 
-    this.getDataVizObjects = function(user, dataSetName){
+    this.getDataVizObjects = function(user, dataSetCode){
         var dataVizObjects=[];
 
         var getCharts = function(){
             var chartsSuccessPromise = function(response){
                 dataVizObjects.push(response.data.charts)
             };
-            return $http.get(ApiUrl + "/charts.json?filter=name:ilike:" + dataSetName)
+            return $http.get(ApiUrl + "/charts.json?filter=name:ilike:" + dataSetCode)
                 .then(chartsSuccessPromise, failurePromise);
         };
 
@@ -19,7 +19,7 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
                 dataVizObjects.push(response.data.reportTables)
             };
 
-            return $http.get(ApiUrl + "/reportTables.json?filter=name:ilike:" + dataSetName)
+            return $http.get(ApiUrl + "/reportTables.json?filter=name:ilike:" + dataSetCode)
                 .then(reportTablesSuccessPromise, failurePromise);
         };
 
