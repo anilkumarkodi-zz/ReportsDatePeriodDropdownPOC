@@ -14,14 +14,17 @@ Reports.service("DataSetService", ['$http','DataEntrySectionService', function (
                     return DataEntrySectionService.getSection(section.id).then(function(section){
                         dataSet.sections[index] =section
                     })
-                })));
+                })))
+                .then(function(){
+                    return dataSet;
+                });
             };
             dataSet.isResolved = getSections();
             return dataSet;
         };
         var successPromise = function(response){
             var dataset = new DataSet(response.data);
-            return dataset;
+            return dataset.isResolved;
         };
 
         var failurePromise = function(response){

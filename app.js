@@ -1,4 +1,4 @@
-var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar', 'checklist-model']);
+var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
 var dhisUrl;
 if(window.location.href.includes("apps"))
     dhisUrl= window.location.href.split('api/apps/')[0] + '/';
@@ -6,7 +6,7 @@ else
     dhisUrl= "http://localhost:8000";
 var ApiUrl = dhisUrl + '/api';
 
-Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', function(userService, DataSetService, $scope, DataVizObjectService, Config) {
+Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
 
     $scope.selectedDataSet= null;
@@ -43,8 +43,17 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             $scope.user = null;
             $scope.mmrDataSet = {}
             $scope.mmrDataVizObjects = []
+            $scope.mmrFilteredDataVizObjects = []
+            $scope.saveReport = function(){
+                NarrativeService.saveNarratives(Narratives_orig);
+            }
             $scope.isShow = true;
-
+            var getMMRDataSet = function(dataSets) {
+                            return _.filter(dataSets, function(dataSet) {
+                                return dataSet.name.startsWith(Config.dataSetObjectNamePrefix)
+            //                    #TODO: make everything lower or upper case and then compare so that we have a case insensitive comparison.
+                            })[ 0 ];
+            };
             var getDataVizObjects = function(user) {
                 $scope.user = user;
                 return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.name)
@@ -89,10 +98,25 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                     alert('No data charts configured for selected template');
             };
 
+            var addNarratives = function(){
+            alert( $scope.selectedYear+$scope.selectedMonth);
+                DataSetService.getDataSet($scope.selectedDataSet.id)
+                    .then(function(selectedDataSet){
+                        NarrativeService.getNarratives(selectedDataSet, $scope.selectedYear+$scope.selectedMonth, $scope.user.project.id)
+                                                    .then(function(Narratives){
+                                                        Narratives_orig= Narratives;
+                                                        $scope.narratives ={};
+                                                        _.map(Narratives, function(narrative){
+                                                            $scope.narratives[narrative.dataElement] = narrative;
+                                                        })
+                                                    });
+                    })
+            }
             userService.getLoggedInUser()
               .then(getDataVizObjects)
-              .then(assignDataVizObjectsToDataSet);
-            $scope.reportShown = true;
+              .then(assignDataVizObjectsToDataSet)
+              .then(addNarratives);
+          $scope.reportShown = true;
         }
         else {
             alert('Please select Time Period');

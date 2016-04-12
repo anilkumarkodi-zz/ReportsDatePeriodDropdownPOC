@@ -21,7 +21,5 @@ Reports.service("DataElementService", ['$http',function ($http) {
 
         return $http.get(ApiUrl + "/dataElements/" + incompleteDataElement.id + ".json")
             .then(successPromise, failurePromise)
-
     };
-
 }]);
