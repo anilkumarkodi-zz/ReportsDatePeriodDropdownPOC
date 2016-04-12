@@ -20,7 +20,11 @@ Reports.service('NarrativeService', ['$http', function($http){
     }
 
     this.saveNarratives = function(Narratives){
+        var validate = function(response){
+        if(response.data.importCount.ignored > 0 || response.data.importCount.deleted > 0)
+            alert(response.data.conflicts[0].value);
+        }
         return $http.post(ApiUrl + "/dataValueSets", {dataValues: Narratives}, {headers: {"Content-Type": "application/json"}})
-            .then(successPromise, failurePromise)
+            .then(validate, failurePromise)
     }
 }]);
