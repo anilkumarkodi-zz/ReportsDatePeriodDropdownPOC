@@ -4,6 +4,10 @@
     border-bottom: 1px solid #A4A4A4;
 }
 
+.report-container {
+    margin-top: 45px;
+}
+
 .report-body-wrapper {
     padding-left: 30px;
     padding-right: 30px;
