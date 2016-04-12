@@ -95,21 +95,20 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                       });
                 }
                 else
-                    alert('No data charts configured for selected template');
+                    alert('No data charts or tables configured for the selected template');
             };
 
             var addNarratives = function(){
-            alert( $scope.selectedYear+$scope.selectedMonth);
                 DataSetService.getDataSet($scope.selectedDataSet.id)
                     .then(function(selectedDataSet){
                         NarrativeService.getNarratives(selectedDataSet, $scope.selectedYear+$scope.selectedMonth, $scope.user.project.id)
-                                                    .then(function(Narratives){
-                                                        Narratives_orig= Narratives;
-                                                        $scope.narratives ={};
-                                                        _.map(Narratives, function(narrative){
-                                                            $scope.narratives[narrative.dataElement] = narrative;
-                                                        })
-                                                    });
+                            .then(function(Narratives){
+                                Narratives_orig= Narratives;
+                                $scope.narratives ={};
+                                _.map(Narratives, function(narrative){
+                                    $scope.narratives[narrative.dataElement] = narrative;
+                                })
+                            });
                     })
             }
             userService.getLoggedInUser()
@@ -121,9 +120,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
         else {
             alert('Please select Time Period');
         }
-
     };
-
 } ]);
 
 Reports.directive('monthSelect',function(){

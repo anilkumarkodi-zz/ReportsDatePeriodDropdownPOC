@@ -11,7 +11,7 @@ Reports.service('NarrativeService', ['$http', function($http){
         return Narratives;
     }
     var failurePromise = function(){
-        alert('Fetching data failed');
+        alert('Could not connect to DHIS');
     }
     this.getNarratives = function(dataset, period, orgUnitId){
     dataSet = dataset;
@@ -21,8 +21,6 @@ Reports.service('NarrativeService', ['$http', function($http){
 
     this.saveNarratives = function(Narratives){
         return $http.post(ApiUrl + "/dataValueSets", {dataValues: Narratives}, {headers: {"Content-Type": "application/json"}})
-            .then(function(){
-                alert('posted');
-            })
+            .then(successPromise, failurePromise)
     }
 }]);
