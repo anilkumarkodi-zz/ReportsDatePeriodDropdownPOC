@@ -23,14 +23,44 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
                 .then(reportTablesSuccessPromise, failurePromise);
         };
 
+        var calculateReportTableTotal = function(data) {
+          var visibleHeaderIndex = [];
+          var headers = data.headers;
+          var rows = data.rows;
+          headers.push({hidden:false,name:"Total"});
+          var newRow = new Array(headers.length-1);
+          newRow[1]="Total";
+          _.map(headers, function(header, index){
+            if(!(header.hidden) && (index !=1) && (index!= headers.length-1)) visibleHeaderIndex.push(index);
+          });
+          _.map(visibleHeaderIndex, function(visibleHeaderIndex){
+            var columnSum = 0;
+            _.map(rows, function(row){
+              columnSum = columnSum + +row[visibleHeaderIndex]
+            });
+            newRow[visibleHeaderIndex] = (columnSum == 0) ? "" : columnSum;
+          });
+          rows.push(newRow);
+
+          _.map(rows, function(row){
+            var rowSum = 0;
+            _.map(visibleHeaderIndex, function(visibleHeaderIndex){
+              rowSum = rowSum+ +(row[visibleHeaderIndex]);
+            });
+            row[headers.length-1] = (rowSum ==0)? "" : rowSum;
+          })
+        };
+
         var getReportTablesJson = function(dataVizObjects){
            _.map(dataVizObjects, function(dataObject, index) {
                 dataObject.jsonData = {};
                 var reportTablesJsonSuccessPromise = function(response){
                     if((dataVizObjects[index].href).indexOf("charts")>-1)
                         dataVizObjects[index].jsonData=dataVizObjects[index].href+"/data";
-                    else
-                        dataVizObjects[index].jsonData = response.data;
+                    else {
+                      calculateReportTableTotal(response.data);
+                      dataVizObjects[ index ].jsonData = response.data;
+                    }
                 };
                 var dataObjectUrl=ApiUrl;
                 if((dataObject.href).indexOf("charts")>-1)
