@@ -8,7 +8,7 @@ Reports.directive('templateSelect',function() {
 Reports.controller("templateSelectorCtrl", ["UserService", "$scope", "$element", "$attrs", 'Config', function (userService, scope, element, attrs, Config) {
       var getMMRDataSet = function(dataSets) {
         return _.filter(dataSets, function(dataSet) {
-          return dataSet.name.startsWith(Config.dataSetObjectNamePrefix);
+          return dataSet.code.startsWith(Config.dataSetMonthlyObjectCodePrefix) | dataSet.code.startsWith(Config.dataSetWeeklyObjectCodePrefix);
         });
       };
 
