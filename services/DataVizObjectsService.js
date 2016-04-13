@@ -3,7 +3,7 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
         alert('Fetching data failed');
     };
 
-    this.getDataVizObjects = function(user, dataSetCode){
+    this.getDataVizObjects = function(user, dataSetCode, selectedTimePeriod){
         var dataVizObjects=[];
 
         var getCharts = function(){
@@ -66,7 +66,7 @@ Reports.service('DataVizObjectService',['$http','Config', function($http, config
                 if((dataObject.href).indexOf("charts")>-1)
                     dataObjectUrl=dataObjectUrl+"/charts/"+dataObject.id+"/data.json";
                 else
-                    dataObjectUrl=dataObjectUrl+"/reportTables/"+dataObject.id+"/data.json";
+                    dataObjectUrl=dataObjectUrl+"/reportTables/"+dataObject.id+"/data.json?date="+selectedTimePeriod;
 
                 return $http.get(dataObjectUrl)
                   .then(reportTablesJsonSuccessPromise, failurePromise);

@@ -52,7 +52,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             $scope.isShow = true;
             var getDataVizObjects = function(user) {
                 $scope.user = user;
-                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code)
+                var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
+                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code, selectedTimePeriod)
                   .then(function(dataVizObjects) {
                       $scope.mmrDataVizObjects = dataVizObjects;
                       console.log("All dataviz", $scope.mmrDataVizObjects);
@@ -65,11 +66,11 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                 return _.filter($scope.mmrDataVizObjects, function(dataVizObject) {
                     if(( (dataVizObject.name).indexOf(dataSection.code) > -1 )) {
                         if((dataVizObject.href).indexOf("charts") > -1 ) {
-                            dataVizObject.href = dataVizObject.href + "/data";
+                            dataVizObject.href = dataVizObject.href + "/data?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
                             dataSection.charts.push(dataVizObject);
                         }
                         else {
-                            dataVizObject.href = dataVizObject.href + "/data.html";
+                            dataVizObject.href = dataVizObject.href + "/data.html?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
                             dataSection.reportTables.push(dataVizObject);
                         }
                     }
