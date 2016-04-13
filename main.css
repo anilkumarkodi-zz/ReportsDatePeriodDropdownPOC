@@ -83,6 +83,16 @@
     float: left;
 }
 
+.table-header {
+    padding: 5px;
+    text-align: center;
+}
+
+.table-container {
+    padding: 5px;
+    text-align: center;
+}
+
 /* Font Weight */
 
 .f-weight-900 {
