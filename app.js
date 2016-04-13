@@ -5,7 +5,9 @@ if(window.location.href.includes("apps"))
 else
     dhisUrl= "http://localhost:8000";
 var ApiUrl = dhisUrl + '/api';
-
+setTimeout(function(){
+    dhis2.menu.mainAppMenu.closeAll();
+}, 2000);
 Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
 
