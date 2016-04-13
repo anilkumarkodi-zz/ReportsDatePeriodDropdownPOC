@@ -18,8 +18,8 @@
 }
 
 .report-body-wrapper {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .report-body-wrapper h4 {
@@ -94,19 +94,19 @@
     margin-bottom: 10px;
 }
 
+.chart-wrapper {
+    padding-left: 35px;
+}
+
 .chart-container {
     width: 48%;
     margin-right: 10px;
     margin-bottom: 90px;
-    display: inline-block;
-    float: left;
 }
 
 .report-table {
     margin-right: 10px;
     margin-bottom: 90px;
-    display: inline-block;
-    float: left;
 }
 
 .table-header {
