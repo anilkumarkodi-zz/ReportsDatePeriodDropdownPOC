@@ -55,14 +55,16 @@
             <d2-header-bar class="noprint"></d2-header-bar>
             <h1 align="center">REPORT</h1>
             <div class="header-section-wrapper">
-                <h4 class="f-weight-900">Select a Template</h4>
-                <template-select></template-select>
-                <div ng-if="showMonthlyTimePeriod" class="period-selection-wrapper">
+                <div class="template-selection-wrapper">
+                    <template-select></template-select>
+                </div>
+                <div class="period-selection-wrapper" ng-if="showMonthlyTimePeriod">
                     <h4 class="f-weight-900">Select Time Period</h4>
-                    <month-select></month-select>
-                    <year-select></year-select>
-                    <br/><br/>
-                    <button class="btn btn-primary align-right" ng-click="getReport()">
+                    <div class="period-selection-container">
+                        <month-select></month-select>
+                        <year-select></year-select>
+                    </div>
+                    <button class="btn btn-primary" ng-click="getReport()">
                         Get Report
                     </button>
                 </div>
@@ -74,19 +76,21 @@
             <div class="section-wrapper" ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
                 <h3 class="f-weight-900 text-align-left">{{section.name}}</h3>
 
-                <div class="chart-wrapper" ng-repeat = "chart in section.charts">
-                        <img ng-src=" {{ chart.href }} " class="chart-container"/>
+                <div>
+                    <div class="chart-container" ng-repeat = "chart in section.charts">
+                        <img ng-src=" {{ chart.href }} "/>
+                    </div>
+
+                    <div class="chart-wrapper" ng-repeat = "reportTable in section.reportTables">
+                        <display-report report-data="reportTable.jsonData"></display-report>
+                    </div>
                 </div>
-
-                <span ng-repeat = "reportTable in section.reportTables">
-					<display-report report-data="reportTable.jsonData"></display-report>
-				</span>
-
+                <br>
                 <div class="form-group report-content">
-                    <label>{{section.dataElements[0].name}}</label>
-                    <span ng-repeat="dataElement in section.dataElements">
+                    <div class="narrative-container" ng-repeat="dataElement in section.dataElements">
+                        <h5 class="f-weight-900">{{dataElement.name}}</h5>
                         <textarea class="form-control" rows="5" cols="10" ng-change="saveReport()" ng-model="narratives[dataElement.id].value" placeholder="Write your narrative here..." ng-keyup="calculateHeight($event)"></textarea>
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>

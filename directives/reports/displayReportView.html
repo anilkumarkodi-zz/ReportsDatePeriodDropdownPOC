@@ -1,10 +1,12 @@
-<table  border="1" class="report-table">
-  <thead>
-    <th class="table-header" ng-repeat="header in reportData.headers" ng-hide="{{header.hidden}}">{{header.name}}</th>
-  </thead>
-  <tbody>
-    <tr ng-repeat="row in reportData.rows">
-      <td class="table-container" ng-repeat="value in row track by $index" ng-hide="{{reportData.headers[$index].hidden}}">{{value}}</td>
-    </tr>
-  </tbody>
-</table>
+<div>
+  <table  border="1" class="report-table">
+    <thead>
+      <th class="table-header" ng-repeat="header in reportData.headers" ng-hide="{{header.hidden}}">{{header.name}}</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="row in reportData.rows">
+        <td class="table-container" ng-repeat="value in row track by $index" ng-hide="{{reportData.headers[$index].hidden}}">{{value}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

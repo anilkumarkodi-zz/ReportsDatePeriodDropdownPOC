@@ -1,5 +1,6 @@
-<span ng-controller="templateSelectorCtrl">
+<div ng-controller="templateSelectorCtrl">
+  <h4 class="f-weight-900">Select a Template</h4>
   <select id="templateSelection" class="form-control" ng-options="dataSet.name for dataSet in dataSets" ng-model="dataSet" ng-change="getTimePeriod(dataSet)">
     <option value="" disabled>Select Template</option>
   </select>
-</span>
+</div>
