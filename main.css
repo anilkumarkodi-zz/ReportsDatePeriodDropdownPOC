@@ -93,8 +93,8 @@
     height: 120px;
     width: 120px;
     position: fixed;
-    right: 100px;
-    bottom: 50px;
+    right: 50px;
+    bottom: 10px;
 }
 
 .page-action-wrapper button {
@@ -124,6 +124,11 @@
 .table-container {
     padding: 5px;
     text-align: center;
+}
+
+.header-action-button {
+    position: absolute;
+    right: 50px;
 }
 
 /* Font Weight */
