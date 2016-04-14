@@ -15,6 +15,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
     $scope.getTimePeriod = function(dataSet){
         $scope.reportShown = false;
         $scope.noDataMessageShown = true;
+        $scope.spinnerShown = false;
 
         if(dataSet != undefined){
             $scope.isShow = false;
@@ -39,8 +40,10 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
 
     $scope.getReport = function(){
 
+
         $scope.noDataMessageShown = false;
-        
+        $scope.spinnerShown = true;
+
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
@@ -105,6 +108,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                                 _.map(Narratives, function(narrative){
                                     $scope.narratives[narrative.dataElement] = narrative;
                                 })
+                                $scope.spinnerShown = false;
+                                $scope.reportShown = true;
                             });
                     })
             }
@@ -112,7 +117,6 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
               .then(getDataVizObjects)
               .then(assignDataVizObjectsToDataSet)
               .then(addNarratives);
-          $scope.reportShown = true;
         }
         else {
             alert('Please select Time Period');

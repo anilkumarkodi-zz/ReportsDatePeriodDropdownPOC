@@ -98,6 +98,10 @@
         <div class="no-data-wrapper" ng-show="noDataMessageShown">
             <h3>No report is selected yet</h3>
         </div>
+        
+        <div class="spinner-wrapper" ng-show="spinnerShown">
+            <img src="./img/spinner.gif" alt="Loading reports.......">
+        </div>
 
         <div ng-show="reportShown" class="page-action-wrapper">
             <button id="export" type="button" class="btn btn-primary">
