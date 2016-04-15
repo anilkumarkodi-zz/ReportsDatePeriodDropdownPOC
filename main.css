@@ -90,11 +90,11 @@
 }
 
 .page-action-wrapper {
-    height: 120px;
+    height: auto;
     width: 120px;
     position: fixed;
     right: 50px;
-    bottom: 10px;
+    bottom: 20px;
 }
 
 .page-action-wrapper button {
