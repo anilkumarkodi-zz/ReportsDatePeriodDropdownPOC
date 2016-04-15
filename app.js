@@ -151,11 +151,14 @@ Reports.directive('yearSelect',function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<select class="form-control" ng-model="$parent.selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
+        template: '<select class="form-control" ng-model="$parent.selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-selected="{{year==$parent.selectedYear}}"ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.years = [];
             var noOfYear = 0;
             var currentYear = new Date().getFullYear();
+
+            scope.$parent.selectedYear = currentYear;
+
             while (noOfYear < 2) {
                 scope.years.push(currentYear - noOfYear);
                 noOfYear++;
