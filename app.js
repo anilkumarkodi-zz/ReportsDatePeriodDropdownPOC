@@ -1,10 +1,10 @@
 var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
 var dhisUrl;
 if(window.location.href.includes("apps"))
-    dhisUrl= window.location.href.split('api/apps/')[0] + '/';
+    dhisUrl= window.location.href.split('api/apps/')[0];
 else
-    dhisUrl= "http://localhost:8000";
-var ApiUrl = dhisUrl + '/api';
+    dhisUrl= "http://localhost:8000/";
+var ApiUrl = dhisUrl + 'api';
 setTimeout(function(){
     dhis2.menu.mainAppMenu.closeAll();
 }, 2000);
@@ -40,7 +40,6 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
 
     $scope.getReport = function(){
 
-
         $scope.noDataMessageShown = false;
         $scope.spinnerShown = true;
 
@@ -49,8 +48,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             $scope.mmrDataSet = {}
             $scope.mmrDataVizObjects = []
             $scope.mmrFilteredDataVizObjects = []
-            $scope.saveReport = function(){
-                NarrativeService.saveNarratives(Narratives_orig);
+            $scope.saveReport = function(textArea){
+                NarrativeService.saveNarratives([$scope.narratives[textArea.dataElement.id]]);
             }
             $scope.isShow = true;
             var getDataVizObjects = function(user) {
@@ -103,7 +102,6 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                     .then(function(selectedDataSet){
                         NarrativeService.getNarratives(selectedDataSet, $scope.selectedYear+$scope.selectedMonth, $scope.user.project.id)
                             .then(function(Narratives){
-                                Narratives_orig= Narratives;
                                 $scope.narratives ={};
                                 _.map(Narratives, function(narrative){
                                     $scope.narratives[narrative.dataElement] = narrative;

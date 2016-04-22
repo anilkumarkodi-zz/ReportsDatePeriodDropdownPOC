@@ -21,9 +21,12 @@ Reports.service('NarrativeService', ['$http', function($http){
 
     this.saveNarratives = function(Narratives){
         var validate = function(response){
-        if(response.data.importCount.ignored > 0 || response.data.importCount.deleted > 0)
-            alert(response.data.conflicts[0].value);
+        if(response.data.conflicts) {
+            alert("Narrative could not be saved. Please try again.");
+            console.log(response.data.conflicts[0].value);
+          }
         }
+        console.log("Narrative Posted: ", {dataValues: Narratives});
         return $http.post(ApiUrl + "/dataValueSets", {dataValues: Narratives}, {headers: {"Content-Type": "application/json"}})
             .then(validate, failurePromise)
     }
