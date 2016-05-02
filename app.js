@@ -8,7 +8,7 @@ var ApiUrl = dhisUrl + 'api';
 setTimeout(function(){
     dhis2.menu.mainAppMenu.closeAll();
 }, 2000);
-Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, Config, NarrativeService) {
+Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService','EventVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, EventVizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
 
     $scope.selectedDataSet= null;
@@ -47,27 +47,41 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             $scope.user = null;
             $scope.mmrDataSet = {}
             $scope.mmrDataVizObjects = []
+            $scope.mmrEventVizObjects = []
             $scope.mmrFilteredDataVizObjects = []
             $scope.saveReport = function(textArea){
                 NarrativeService.saveNarratives([$scope.narratives[textArea.dataElement.id]]);
             }
             $scope.isShow = true;
+            $scope.mmrVizObjects = [];
             var getDataVizObjects = function(user) {
                 $scope.user = user;
                 var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
                 return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code, selectedTimePeriod)
                   .then(function(dataVizObjects) {
                       $scope.mmrDataVizObjects = dataVizObjects;
+                      $scope.mmrVizObjects.push(dataVizObjects);
                       console.log("All dataviz", $scope.mmrDataVizObjects);
                   })
+            };
+
+            var getEventVizObjects = function() {
+                var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
+                return EventVizObjectService.getEventVizObjects($scope.user, $scope.selectedDataSet.code, selectedTimePeriod)
+                    .then(function(eventVizObjects) {
+                        $scope.mmrEventVizObjects = eventVizObjects;
+                        $scope.mmrVizObjects.push(eventVizObjects);
+                    })
             };
 
             var processSection = function(dataSection){
                 dataSection.charts = [];
                 dataSection.reportTables = [];
-                return _.filter($scope.mmrDataVizObjects, function(dataVizObject) {
+                dataSection.eventCharts = [];
+                dataSection.eventReports = [];
+                return _.filter(_.flatten($scope.mmrVizObjects), function(dataVizObject) {
                     if(( (dataVizObject.name).indexOf(dataSection.code) > -1 )) {
-                        if((dataVizObject.href).indexOf("charts") > -1 ) {
+                        if(((dataVizObject.href).indexOf("charts") > -1 || (dataVizObject.href).indexOf("eventCharts") > -1) ) {
                             dataVizObject.href = dataVizObject.href + "/data?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
                             dataSection.charts.push(dataVizObject);
                         }
@@ -81,14 +95,13 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             };
 
             var assignDataVizObjectsToDataSet = function() {
-                if( $scope.mmrDataVizObjects.length != 0 ) {
+                if( $scope.mmrVizObjects.length != 0 ) {
                     return DataSetService.getDataSet($scope.selectedDataSet.id)
                       .then(function(dataset) {
                           return dataset.isResolved.then(function(){
                               _.map(dataset.sections, function(dataSection) {
                                   processSection(dataSection);
                               });
-                              console.log("Selected DataSet", dataset)
                               $scope.mmrDataSet = dataset;
                           });
                       });
@@ -113,6 +126,7 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
             }
             userService.getLoggedInUser()
               .then(getDataVizObjects)
+              .then(getEventVizObjects)
               .then(assignDataVizObjectsToDataSet)
               .then(addNarratives);
         }
