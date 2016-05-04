@@ -8,9 +8,8 @@ var ApiUrl = dhisUrl + 'api';
 setTimeout(function(){
     dhis2.menu.mainAppMenu.closeAll();
 }, 2000);
-Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService','EventVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, EventVizObjectService, Config, NarrativeService) {
+Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'VizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, VizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
-
     $scope.selectedDataSet= null;
     $scope.getTimePeriod = function(dataSet){
         $scope.reportShown = false;
@@ -39,39 +38,25 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
     };
 
     $scope.getReport = function(){
-
         $scope.noDataMessageShown = false;
         $scope.spinnerShown = true;
-
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
-            $scope.mmrDataVizObjects = []
-            $scope.mmrEventVizObjects = []
-            $scope.mmrFilteredDataVizObjects = []
             $scope.saveReport = function(textArea){
                 NarrativeService.saveNarratives([$scope.narratives[textArea.dataElement.id]]);
             }
             $scope.isShow = true;
             $scope.mmrVizObjects = [];
-            var getDataVizObjects = function(user) {
+
+            var getVizObjects = function(user) {
                 $scope.user = user;
                 var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
-                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code, selectedTimePeriod)
-                  .then(function(dataVizObjects) {
-                      $scope.mmrDataVizObjects = dataVizObjects;
-                      $scope.mmrVizObjects.push(dataVizObjects);
-                      console.log("All dataviz", $scope.mmrDataVizObjects);
+                return VizObjectService.getVizObjects(user, $scope.selectedDataSet.code, selectedTimePeriod)
+                  .then(function(vizObjects) {
+                        $scope.mmrVizObjects.push(vizObjects);
+                      console.log("All viz", $scope.mmrVizObjects);
                   })
-            };
-
-            var getEventVizObjects = function() {
-                var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
-                return EventVizObjectService.getEventVizObjects($scope.user, $scope.selectedDataSet.code, selectedTimePeriod)
-                    .then(function(eventVizObjects) {
-                        $scope.mmrEventVizObjects = eventVizObjects;
-                        $scope.mmrVizObjects.push(eventVizObjects);
-                    })
             };
 
             var processSection = function(dataSection){
@@ -79,22 +64,24 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                 dataSection.reportTables = [];
                 dataSection.eventCharts = [];
                 dataSection.eventReports = [];
-                return _.filter(_.flatten($scope.mmrVizObjects), function(dataVizObject) {
-                    if(( (dataVizObject.name).indexOf(dataSection.code) > -1 )) {
-                        if(((dataVizObject.href).indexOf("charts") > -1 || (dataVizObject.href).indexOf("eventCharts") > -1) ) {
-                            dataVizObject.href = dataVizObject.href + "/data?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
-                            dataSection.charts.push(dataVizObject);
+                return _.map(_.flatten($scope.mmrVizObjects), function(vizObject) {
+                    if(( (vizObject.name).indexOf(dataSection.code) > -1 )) {
+                        if(((vizObject.href).indexOf("charts") > -1 || (vizObject.href).indexOf("eventCharts") > -1) ) {
+                            vizObject.href = vizObject.href + "/data?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
+                            dataSection.charts.push(vizObject);
                         }
-                        else {
-                            dataVizObject.href = dataVizObject.href + "/data.html?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
-                            dataSection.reportTables.push(dataVizObject);
+                        else if((vizObject.href).indexOf("reportTables") > -1) {
+                            vizObject.href = vizObject.href + "/data.html?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
+                            dataSection.reportTables.push(vizObject);
                         }
+                        else
+                            alert("event reports later");
                     }
                     return dataSection;
                 })[ 0 ];
             };
 
-            var assignDataVizObjectsToDataSet = function() {
+            var assignVizObjectsToDataSet = function() {
                 if( $scope.mmrVizObjects.length != 0 ) {
                     return DataSetService.getDataSet($scope.selectedDataSet.id)
                       .then(function(dataset) {
@@ -125,10 +112,9 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                     })
             }
             userService.getLoggedInUser()
-              .then(getDataVizObjects)
-              .then(getEventVizObjects)
-              .then(assignDataVizObjectsToDataSet)
-              .then(addNarratives);
+                .then(getVizObjects)
+                .then(assignVizObjectsToDataSet)
+                .then(addNarratives);
         }
         else {
             alert('Please select Time Period');
