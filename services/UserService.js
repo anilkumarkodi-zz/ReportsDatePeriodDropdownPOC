@@ -1,46 +1,46 @@
-Reports.service('UserService',['$http','Config', function($http, config){
-   this.getLoggedInUser = function(){
+Reports.service('UserService', ['$http', function ($http) {
+    this.getLoggedInUser = function () {
 
-       var failurePromise = function(){
-           alert('Fetching data failed');
-       };
+        var failurePromise = function () {
+            alert('Fetching data failed');
+        };
 
-       var isOperationalUnit = function(orgUnit){
-           return orgUnit.level == config.operationalUnitLevel
-       };
+        var UserOrgUnit = function (data) {
+            var orgUnit = {};
+            orgUnit.name = data.name;
+            orgUnit.id = data.id;
+            orgUnit.level = data.level;
+            orgUnit.dataSets = data.dataSets;
+            return orgUnit;
+        }
 
-       var getOrganisationUnit = function(orgUnit){
-           var successPromise = function(response){
-               return response.data;
-           };
-           return $http.get(ApiUrl + "/organisationUnits/" + orgUnit.id + ".json")
-               .then(successPromise, failurePromise)
-       };
+        var getOrganisationUnit = function (orgUnit) {
+            var successPromise = function (response) {
+                return new UserOrgUnit(response.data);
+            };
+            return $http.get(ApiUrl + "/organisationUnits/" + orgUnit.id + ".json")
+                .then(successPromise, failurePromise)
+        };
 
-       var successPromise = function(response){
-           return new User(response.data)
-       };
+        var successPromise = function (response) {
+            return new User(response.data)
+        };
 
-       var User = function(userData){
-           var user = {};
-           user.id = userData.id;
-           var promises = _.map(userData.organisationUnits, getOrganisationUnit);
-           return Promise.all(promises)
-               .then(function(organisationUnits){
-                   user.operationalUnit = _.filter(organisationUnits, isOperationalUnit)[0];
-                   return getOrganisationUnit(user.operationalUnit.parent)
-                       .then(function(parentOrgUnit){
-                           user.project = parentOrgUnit;
-                           return getOrganisationUnit(user.project.parent)
-                               .then(function(parentOrgUnit) {
-                                   user.mission = parentOrgUnit;
-                                   return user;
-                               });
-                       })
-               });
-       };
+        var User = function (userData) {
+            var user = {};
+            user.id = userData.id;
+            var promises = _.map(userData.organisationUnits, getOrganisationUnit);
 
-       return $http.get(ApiUrl + "/me.json")
-           .then(successPromise, failurePromise);
-   };
+            return Promise.all(promises)
+                .then(function (organisationUnits) {
+                    user.orgUnit = _.minBy(organisationUnits, function (organisationUnit) {
+                        return organisationUnit.level;
+                    })
+                    return user;
+                });
+        };
+
+        return $http.get(ApiUrl + "/me.json")
+            .then(successPromise, failurePromise);
+    };
 }]);

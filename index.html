@@ -1,118 +1,120 @@
 <!DOCTYPE html>
 <html ng-app="Reports" lang="en">
-	<head>
-		<script src="include/angular-1.4.0/angular.min.js" type="text/javascript"> </script>
-		<script src="include/angular-1.4.0/angular-route.min.js" type="text/javascript"> </script>
-		<script src="include/angular-1.4.0/angular-cookies.min.js" type="text/javascript"> </script>
-		<script src="include/angular-1.4.0/angular-resource.min.js" type="text/javascript"> </script>
-		<script src="include/angular-1.4.0/angular-translate.min.js" type="text/javascript"> </script>
-		<script src="include/angular-1.4.0/angular-translate-loader-static-files.min.js" type="text/javascript"> </script>
-		
-		<script src="include/jquery-2.1.4/jquery-2.1.4.min.js" type="text/javascript"> </script>
-		<script src="include/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"> </script>
-		<script src="include/bootstrap-3.3.4/js/bootstrap.min.js" type="text/javascript"></script>
-		<script src="include/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
-		<script src="bower_components/lodash/dist/lodash.min.js" type="text/javascript"></script>
-		<link rel="stylesheet" type="text/css" href="include/jquery-ui-1.11.4/jquery-ui.css">
-		<link rel="stylesheet" type="text/css" href="include/bootstrap-3.3.4/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="include/bootstrap-select/css/bootstrap-select.min.css">
+<head>
+    <script src="include/angular-1.4.0/angular.min.js" type="text/javascript"></script>
+    <script src="include/angular-1.4.0/angular-route.min.js" type="text/javascript"></script>
+    <script src="include/angular-1.4.0/angular-cookies.min.js" type="text/javascript"></script>
+    <script src="include/angular-1.4.0/angular-resource.min.js" type="text/javascript"></script>
+    <script src="include/angular-1.4.0/angular-translate.min.js" type="text/javascript"></script>
+    <script src="include/angular-1.4.0/angular-translate-loader-static-files.min.js" type="text/javascript"></script>
+
+    <script src="include/jquery-2.1.4/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="include/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
+    <script src="include/bootstrap-3.3.4/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="include/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="include/jquery-ui-1.11.4/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="include/bootstrap-3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="include/bootstrap-select/css/bootstrap-select.min.css">
 
 
-		<link rel="stylesheet" type="text/css" href="./main.css">
+    <link rel="stylesheet" type="text/css" href="./main.css">
 
-		<!--DHIS related stuff-->
-		<script>
-			window.dhis2 = window.dhis2 || {};
-			dhis2.settings = dhis2.settings || {};
-			dhis2.settings.baseUrl = '..';
-		</script>
-		<script type="text/javascript" src="/dhis-web-commons/javascripts/dhis2/dhis2.translate.js"></script>
-		<script type="text/javascript" src="/dhis-web-commons/javascripts/dhis2/dhis2.menu.js"></script>
-		<script type="text/javascript" src="/dhis-web-commons/javascripts/dhis2/dhis2.menu.ui.js"></script>
-		<link type="text/css" rel="stylesheet" href="/dhis-web-commons/font-awesome/css/font-awesome.min.css"/>
-		<link type="text/css" rel="stylesheet" media="screen" href="/dhis-web-commons/css/menu.css">
+    <!--DHIS related stuff-->
+    <script>
+        window.dhis2 = window.dhis2 || {};
+        dhis2.settings = dhis2.settings || {};
+        dhis2.settings.baseUrl = '..';
+    </script>
+    <script type="text/javascript" src="/dhis-web-commons/javascripts/dhis2/dhis2.translate.js"></script>
+    <script type="text/javascript" src="/dhis-web-commons/javascripts/dhis2/dhis2.menu.js"></script>
+    <script type="text/javascript" src="/dhis-web-commons/javascripts/dhis2/dhis2.menu.ui.js"></script>
+    <link type="text/css" rel="stylesheet" href="/dhis-web-commons/font-awesome/css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" media="screen" href="/dhis-web-commons/css/menu.css">
 
-		<script src="app.js" type="text/javascript"> </script>
+    <script src="app.js" type="text/javascript"></script>
 
 
-		<!-- Load directives and modules -->
-		<script src="services/DataSetService.js" type="text/javascript"></script>
-		<script src="services/DataEntrySectionService.js" type="text/javascript"></script>
-		<script src="services/DataElementService.js" type="text/javascript"></script>
-		<script src="services/UserService.js" type="text/javascript"></script>
-		<script src="services/NarrativeService.js" type="text/javascript"></script>
-        <script src="services/VizObjectService.js" type="text/javascript"></script>
-		<script src="config/config.js" type="text/javascript"></script>
-		<script src="directives/template/templateSelectorCtrl.js" type="text/javascript"></script>
-		<script src="directives/reports/displayReportCtrl.js" type="text/javascript"></script>
+    <!-- Load directives and modules -->
+    <script src="services/DataSetService.js" type="text/javascript"></script>
+    <script src="services/DataEntrySectionService.js" type="text/javascript"></script>
+    <script src="services/DataElementService.js" type="text/javascript"></script>
+    <script src="services/UserService.js" type="text/javascript"></script>
+    <script src="services/NarrativeService.js" type="text/javascript"></script>
+    <script src="services/VizObjectService.js" type="text/javascript"></script>
+    <script src="config/config.js" type="text/javascript"></script>
+    <script src="directives/template/templateSelectorCtrl.js" type="text/javascript"></script>
+    <script src="directives/reports/displayReportCtrl.js" type="text/javascript"></script>
 
-        <script src="./main.js" type="application/javascript"></script>
+    <script src="./main.js" type="application/javascript"></script>
 
-	</head>
+</head>
 
-	<body ng-controller="ReportsController" class="report-body-wrapper">
-        <div class="header-wrapper">
-            <d2-header-bar class="noprint"></d2-header-bar>
-            <h1 align="center">REPORT</h1>
-            <div class="header-section-wrapper">
-                <div class="template-selection-wrapper">
-                    <template-select></template-select>
-                </div>
-                <div class="period-selection-wrapper" ng-if="showMonthlyTimePeriod">
-                    <h4 class="f-weight-900">Time Period</h4>
-                    <div class="period-selection-container">
-                        <month-select></month-select>
-                        <year-select></year-select>
-                    </div>
-                    <button class="btn btn-primary" ng-click="getReport()">
-                        Get Report
-                    </button>
-
-                    <button id="export" type="button" class="btn btn-primary header-action-button" ng-show="reportShown">
-                        <span class="glyphicon glyphicon-share"></span> Export
-                    </button>
-
-                </div>
+<body ng-controller="ReportsController" class="report-body-wrapper">
+<div class="header-wrapper">
+    <d2-header-bar class="noprint"></d2-header-bar>
+    <h1 align="center">REPORT</h1>
+    <div class="header-section-wrapper">
+        <div class="template-selection-wrapper">
+            <template-select></template-select>
+        </div>
+        <div class="period-selection-wrapper" ng-if="showMonthlyTimePeriod">
+            <h4 class="f-weight-900">Time Period</h4>
+            <div class="period-selection-container">
+                <month-select></month-select>
+                <year-select></year-select>
             </div>
-        </div>
-
-
-        <div class="report-container">
-            <div class="section-wrapper" ng-if="isShow" ng-repeat = "section in mmrDataSet.sections">
-                <h3 class="f-weight-900 text-align-left">{{section.name}}</h3>
-
-                <div>
-                    <div class="chart-container" ng-repeat = "chart in section.charts">
-                        <img ng-src=" {{ chart.href }} "/>
-                    </div>
-
-                    <div class="chart-wrapper" ng-repeat = "reportTable in section.reportTables">
-                        <display-report report-data="reportTable.jsonData"></display-report>
-                    </div>
-                </div>
-                <br>
-                <div class="form-group report-content">
-                    <div class="narrative-container" ng-repeat="dataElement in section.dataElements">
-                        <h5 class="f-weight-900">{{dataElement.name}}</h5>
-                        <textarea class="form-control" rows="5" cols="10" ng-change="saveReport(this)" ng-model="narratives[dataElement.id].value" placeholder="Write your narrative here..." ng-keyup="calculateHeight($event)"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="no-data-wrapper" ng-show="noDataMessageShown">
-            <h3>No report is selected yet</h3>
-        </div>
-        
-        <div class="spinner-wrapper" ng-show="spinnerShown">
-            <img src="./img/spinner.gif" alt="Loading reports.......">
-        </div>
-
-        <div ng-show="reportShown" class="page-action-wrapper">
-            <button id="backToTop" type="button" class="btn btn-primary">
-                <span class="glyphicon glyphicon-triangle-top"></span> Back to Top
+            <button class="btn btn-primary" ng-click="getReport()">
+                Get Report
             </button>
-        </div>
 
-	</body>
+            <button id="export" type="button" class="btn btn-primary header-action-button" ng-show="reportShown">
+                <span class="glyphicon glyphicon-share"></span> Export
+            </button>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="report-container">
+    <div class="section-wrapper" ng-if="isShow" ng-repeat="section in mmrDataSet.sections">
+        <h3 class="f-weight-900 text-align-left">{{section.name}}</h3>
+
+        <div>
+            <div class="chart-container" ng-repeat="chart in section.charts">
+                <img ng-src=" {{ chart.href }} "/>
+            </div>
+
+            <div class="chart-wrapper" ng-repeat="reportTable in section.reportTables">
+                <display-report report-data="reportTable.jsonData"></display-report>
+            </div>
+        </div>
+        <br>
+        <div class="form-group report-content">
+            <div class="narrative-container" ng-repeat="dataElement in section.dataElements">
+                <h5 class="f-weight-900">{{dataElement.name}}</h5>
+                <textarea class="form-control" rows="5" cols="10" ng-change="saveReport(this)"
+                          ng-model="narratives[dataElement.id].value" placeholder="Write your narrative here..."
+                          ng-keyup="calculateHeight($event)"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="no-data-wrapper" ng-show="noDataMessageShown">
+    <h3>No report is selected yet</h3>
+</div>
+
+<div class="spinner-wrapper" ng-show="spinnerShown">
+    <img src="./img/spinner.gif" alt="Loading reports.......">
+</div>
+
+<div ng-show="reportShown" class="page-action-wrapper">
+    <button id="backToTop" type="button" class="btn btn-primary">
+        <span class="glyphicon glyphicon-triangle-top"></span> Back to Top
+    </button>
+</div>
+
+</body>
 </html>
