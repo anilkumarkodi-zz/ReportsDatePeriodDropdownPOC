@@ -1,13 +1,15 @@
 var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
 var dhisUrl;
+var dhis2;
 if (window.location.href.includes("apps"))
     dhisUrl = window.location.href.split('api/apps/')[0];
 else
     dhisUrl = "http://localhost:8000/";
 var ApiUrl = dhisUrl + 'api';
-setTimeout(function () {
-    dhis2.menu.mainAppMenu.closeAll();
-}, 2000);
+if(dhis2)
+    setTimeout(function () {
+        dhis2.menu.mainAppMenu.closeAll();
+    }, 2000);
 Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scope', 'VizObjectService', 'Config', 'NarrativeService', function (userService, DataSetService, $scope, VizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
     $scope.selectedDataSet = null;

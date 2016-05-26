@@ -4,6 +4,7 @@ describe("NarrativeService", function () {
     var $rootScope;
     var timeout;
     var p;
+
     beforeEach(function () {
         angular.module('d2HeaderBar', []);
         module("Reports");
@@ -113,13 +114,13 @@ describe("NarrativeService", function () {
                 }
             ];
 
-            spyOn(window, 'alert');
             var serverData = {
                 conflicts: [{
                     value: "123"
                 }]
             };
 
+            spyOn(window, 'alert');
             httpMock.expectPOST("http://localhost:8000/api/dataValueSets", {"dataValues": narratives}, {"Content-Type": "application/json", "Accept": "application/json, text/plain, */*"}).respond(200, serverData);
             narrativeService.saveNarratives(narratives).then(function (response) {
                 expect(window.alert).toHaveBeenCalledWith("Narrative cannot be saved for future periods.")
