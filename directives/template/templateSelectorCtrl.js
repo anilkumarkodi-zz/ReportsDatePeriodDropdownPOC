@@ -5,7 +5,7 @@ Reports.directive('templateSelect', function () {
     };
 });
 
-Reports.controller("templateSelectorCtrl", ["UserService", "$scope", "$element", "$attrs", 'Config', function (userService, scope, element, attrs, Config) {
+Reports.controller("templateSelectorCtrl", ["UserService", "$scope", 'Config', function (userService, scope, Config) {
     var getMMRDataSet = function (dataSets) {
         return _.filter(dataSets, function (dataSet) {
             if (dataSet.code)
