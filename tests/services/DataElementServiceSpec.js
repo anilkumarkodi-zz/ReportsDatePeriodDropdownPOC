@@ -1,20 +1,15 @@
 describe("DataElementService", function () {
     var dataElementService;
     var httpMock;
-    var $rootScope;
-    var timeout;
-    var p;
+
     beforeEach(function () {
         angular.module('d2HeaderBar', []);
         module("Reports");
     });
 
-    beforeEach(inject(function (DataElementService, $httpBackend, $q, _$rootScope_, $timeout) {
+    beforeEach(inject(function (DataElementService, $httpBackend) {
         dataElementService = DataElementService;
-        p = $q;
-        $rootScope = _$rootScope_;
         httpMock = $httpBackend;
-        timeout = $timeout;
     }));
 
     describe("getDataElement", function () {
@@ -35,14 +30,12 @@ describe("DataElementService", function () {
                 type: "TEXT"
             };
 
-            var actualDataElement;
             httpMock.expectGET("http://localhost:8000/api/dataElements/" + dataElement.id + ".json").respond(200, serverDataElement);
-            dataElementService.getDataElement(dataElement).then(function (response) {
-                actualDataElement = response;
+            dataElementService.getDataElement(dataElement).then(function (actualDataElement) {
+                expectedDataElement.isResolved = actualDataElement.isResolved;
+                expect(expectedDataElement).toEqual(actualDataElement);
             });
             httpMock.flush();
-            expectedDataElement.isResolved = actualDataElement.isResolved;
-            expect(expectedDataElement).toEqual(actualDataElement);
         });
 
         it("should get the failure promise when server not responded", function () {
@@ -50,13 +43,11 @@ describe("DataElementService", function () {
                 id: "1234"
             };
             var expectedPromise = {isError: true, status: 404, statusText: ''};
-            var actualPromise;
             httpMock.expectGET("http://localhost:8000/api/dataElements/" + dataElement.id + ".json").respond(404);
-            dataElementService.getDataElement(dataElement).then(function (response) {
-                actualPromise = response;
+            dataElementService.getDataElement(dataElement).then(function (actualPromise) {
+                expect(expectedPromise).toEqual(actualPromise)
             });
             httpMock.flush();
-            expect(expectedPromise).toEqual(actualPromise)
-        })
+        });
     });
 });

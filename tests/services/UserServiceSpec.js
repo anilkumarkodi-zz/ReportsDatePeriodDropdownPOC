@@ -2,20 +2,16 @@ describe("UserService", function () {
     var userService;
     var httpMock;
     var $rootScope;
-    var timeout;
-    var p;
 
     beforeEach(function () {
         angular.module('d2HeaderBar', []);
         module("Reports");
     });
 
-    beforeEach(inject(function (UserService, $httpBackend, $q, _$rootScope_, $timeout) {
+    beforeEach(inject(function (UserService, $httpBackend, _$rootScope_) {
         userService = UserService;
-        p = $q;
         $rootScope = _$rootScope_;
         httpMock = $httpBackend;
-        timeout = $timeout;
     }));
 
     describe("getLoggedInUser", function () {
@@ -23,14 +19,12 @@ describe("UserService", function () {
             var serverData = {
                 name: "test org unit",
                 id: 1234,
-                organisationUnits: [
-                    {
-                        name: "xyz",
-                        id: "123",
-                        level: "2",
-                        dataSets: []
-                    }
-                ]
+                organisationUnits: [{
+                    name: "xyz",
+                    id: "123",
+                    level: "2",
+                    dataSets: []
+                }]
             };
             var expectedUser = {
                 id: 1234,
@@ -59,6 +53,6 @@ describe("UserService", function () {
                 expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
             });
             httpMock.flush();
-        })
+        });
     })
 });

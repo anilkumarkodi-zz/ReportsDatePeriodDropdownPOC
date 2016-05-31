@@ -2,7 +2,6 @@ describe("DataSetService", function () {
     var dataSetService;
     var httpMock;
     var $rootScope;
-    var timeout;
     var p;
     var dataEntrySectionService;
 
@@ -11,12 +10,11 @@ describe("DataSetService", function () {
         module("Reports");
     });
 
-    beforeEach(inject(function (DataSetService, DataEntrySectionService, $httpBackend, $q, _$rootScope_, $timeout) {
+    beforeEach(inject(function (DataSetService, DataEntrySectionService, $httpBackend, $q, _$rootScope_) {
         dataSetService = DataSetService;
         p = $q;
         $rootScope = _$rootScope_;
         httpMock = $httpBackend;
-        timeout = $timeout;
         dataEntrySectionService = DataEntrySectionService;
     }));
 
@@ -32,17 +30,30 @@ describe("DataSetService", function () {
                     name: "default"
                 },
                 isResolved: Promise.resolve({}),
-                sections: []
+                sections: [{}, {}]
             };
 
             var expectedDataSet = {
                 name: "Karma",
                 id: "1234",
                 type: "dataset",
-                sections: []
+                sections: [{
+                    name: "test section",
+                    id: "123",
+                    dataElements: [],
+                    code: 1,
+                    isResolved: Promise.resolve({})
+                }, {
+                    name: "test section",
+                    id: "123",
+                    dataElements: [],
+                    code: 1,
+                    isResolved: Promise.resolve({})
+                }]
             };
 
             httpMock.expectGET("http://localhost:8000/api/dataSets/" + dataSet.id + ".json").respond(200, serverDataSet);
+
             var mockedSection = {
                 name: "test section",
                 id: "123",
@@ -57,10 +68,8 @@ describe("DataSetService", function () {
                 return defer.promise;
             });
 
-            var actualDataSet;
-            dataSetService.getDataSet(dataSet.id).then(function (response) {
-                response.isResolved.then(function () {
-                    actualDataSet = response;
+            dataSetService.getDataSet(dataSet.id).then(function (actualDataSet) {
+                actualDataSet.isResolved.then(function () {
                     expectedDataSet.isResolved = actualDataSet.isResolved;
                     expect(expectedDataSet).toEqual(actualDataSet);
                     done();
@@ -72,14 +81,14 @@ describe("DataSetService", function () {
 
         it("should get the failure promise when server not responded", function () {
             var dataSetId = {};
-            var actualPromise = {isError: true, status: 404, statusText: ''};
-            var expectedPromise;
+            var expectedPromise = {isError: true, status: 404, statusText: ''};
+
             httpMock.expectGET("http://localhost:8000/api/dataSets/" + dataSetId + ".json").respond(404);
-            dataSetService.getDataSet(dataSetId).then(function (response) {
-                expectedPromise = response;
+
+            dataSetService.getDataSet(dataSetId).then(function (actualPromise) {
+                expect(expectedPromise).toEqual(actualPromise);
             });
             httpMock.flush();
-            expect(expectedPromise).toEqual(actualPromise);
-        })
+        });
     });
 });

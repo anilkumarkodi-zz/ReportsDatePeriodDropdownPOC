@@ -1,10 +1,6 @@
 describe("DataEntrySectionService", function () {
     var dataEntrySectionService;
-    var dataElementService;
     var httpMock;
-    var $rootScope;
-    var timeout;
-    var p;
 
     beforeEach(function () {
         module("Reports");
@@ -27,16 +23,13 @@ describe("DataEntrySectionService", function () {
         });
     });
 
-    beforeEach(inject(function (DataEntrySectionService, $httpBackend, $q, _$rootScope_, $timeout) {
+    beforeEach(inject(function (DataEntrySectionService, $httpBackend) {
         dataEntrySectionService = DataEntrySectionService;
-        p = $q;
-        $rootScope = _$rootScope_;
         httpMock = $httpBackend;
-        timeout = $timeout;
     }));
 
     describe("getSection", function () {
-        it("should get data section object from server", function (done) {
+        it("should get data section object", function (done) {
             var section = {
                 id: "123"
             };
@@ -70,17 +63,14 @@ describe("DataEntrySectionService", function () {
 
             httpMock.expectGET("http://localhost:8000/api/sections/" + section.id + ".json").respond(200, serverSection);
 
-            var actualSection;
-            dataEntrySectionService.getSection(section.id).then(function (section) {
-                section.isResolved.then(function () {
-                    actualSection = section;
+            dataEntrySectionService.getSection(section.id).then(function (actualSection) {
+                actualSection.isResolved.then(function () {
                     expectedSection.isResolved = actualSection.isResolved;
                     expect(expectedSection).toEqual(actualSection);
                     done();
                 });
             });
             httpMock.flush();
-            setInterval($rootScope.digest, 900);
         });
 
         it("should get the failure response when section object not found", function () {
@@ -89,7 +79,7 @@ describe("DataEntrySectionService", function () {
             };
             spyOn(window, 'alert');
             httpMock.expectGET("http://localhost:8000/api/sections/" + section.id + ".json").respond(404);
-            dataEntrySectionService.getSection(section.id).then(function (section) {
+            dataEntrySectionService.getSection(section.id).then(function () {
                 expect(window.alert).toHaveBeenCalledWith("Could not connect to DHIS")
             });
             httpMock.flush();

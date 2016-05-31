@@ -8,6 +8,7 @@ describe("templateSelectorCtrl", function () {
     beforeEach(function () {
         angular.module('d2HeaderBar', []);
         module("Reports");
+
         mockedUser = {
             id: 1234,
             orgUnit: {
@@ -62,7 +63,6 @@ describe("templateSelectorCtrl", function () {
                 expect(expectedDataSets).toEqual(scope.dataSets);
                 done();
             });
-        })
-    })
-
+        });
+    });
 });

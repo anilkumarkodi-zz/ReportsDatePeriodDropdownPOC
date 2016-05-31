@@ -6,7 +6,7 @@ if (window.location.href.includes("apps"))
 else
     dhisUrl = "http://localhost:8000/";
 var ApiUrl = dhisUrl + 'api';
-if(dhis2)
+if (dhis2)
     setTimeout(function () {
         dhis2.menu.mainAppMenu.closeAll();
     }, 2000);
@@ -100,7 +100,7 @@ Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scop
             };
 
             var addNarratives = function () {
-                DataSetService.getDataSet($scope.selectedDataSet.id)
+                return DataSetService.getDataSet($scope.selectedDataSet.id)
                     .then(function (selectedDataSet) {
                         NarrativeService.getNarratives(selectedDataSet, $scope.selectedYear + $scope.selectedMonth, $scope.user.orgUnit.id)
                             .then(function (Narratives) {
@@ -113,7 +113,7 @@ Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scop
                             });
                     })
             }
-            userService.getLoggedInUser()
+            return userService.getLoggedInUser()
                 .then(getVizObjects)
                 .then(assignVizObjectsToDataSet)
                 .then(addNarratives);
