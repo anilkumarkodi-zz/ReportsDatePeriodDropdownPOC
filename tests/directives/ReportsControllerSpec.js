@@ -93,7 +93,6 @@ describe("ReportsController", function () {
 
     beforeEach(function () {
         $controller('ReportsController', {$scope: scope});
-
     });
 
     describe("getReport", function () {
@@ -147,6 +146,34 @@ describe("ReportsController", function () {
             scope.calculateHeight(event);
             expect(event.target.style.height).toEqual("20px");
             expect(event.target.style.overflow).toEqual("hidden");
+        });
+    });
+
+    describe("monthSelect", function () {
+        var $scope;
+        beforeEach(inject(function ($rootScope, $compile) {
+            $scope = $rootScope.$new();
+            var element = angular.element("<month-select></month-select>");
+            $compile(element)($scope);
+            $scope.$digest();
+        }));
+
+        it("should have list of months", function () {
+            expect($scope.months.length).toBe(12);
+        });
+    });
+
+    describe("yearSelect", function () {
+        var $scope;
+        beforeEach(inject(function ($rootScope, $compile) {
+            $scope = $rootScope.$new();
+            var element = angular.element("<year-select></year-select>");
+            $compile(element)($scope);
+            $scope.$digest();
+        }));
+
+        it("should have list of years", function () {
+            expect($scope.years.length).toBe(2);
         });
     });
 });
