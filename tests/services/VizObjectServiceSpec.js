@@ -107,11 +107,11 @@ describe("VizObjectService", function () {
             setTimeout($rootScope.$digest, 900);
         });
 
-        it("should get the failure promise when server not responded", function () {
+        it("should get the failure promise when server not responded", function (done) {
             var dataSetCode = "123";
             var selectedTimePeriod = "26-05-2016";
             var user = {};
-            spyOn(window, 'alert');
+            spyOn(window, "alert");
 
             httpMock.expectGET("http://localhost:8000/api/charts.json?filter=name:ilike:" + dataSetCode).respond(404);
             httpMock.expectGET("http://localhost:8000/api/reportTables.json?filter=name:ilike:" + dataSetCode).respond(404);
@@ -119,13 +119,11 @@ describe("VizObjectService", function () {
             httpMock.expectGET("http://localhost:8000/api/eventReports.json?filter=name:ilike:" + dataSetCode).respond(404);
 
             vizObjectService.getVizObjects(user, dataSetCode, selectedTimePeriod).isResolved.then(function () {
-                httpMock.expectGET("http://localhost:8000/api/charts/1/data.json").respond(404);
-                httpMock.expectGET("http://localhost:8000/api/reportTables/12/data.json?date=" + selectedTimePeriod).respond(404);
-                expect(window.alert).toHaveBeenCalledWith("");
+                expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
                 done();
             });
-            httpMock.flush(4);
+            httpMock.flush();
             setTimeout($rootScope.$digest, 900);
-        })
+        });
     });
 });
