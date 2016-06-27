@@ -1,6 +1,6 @@
 <div ng-controller="templateSelectorCtrl">
-  <h4 class="f-weight-900">Template</h4>
+  <h4 class="f-weight-900">{{ 'Template' | translate }}</h4>
   <select id="templateSelection" class="form-control" ng-options="dataSet.name for dataSet in dataSets" ng-model="dataSet" ng-change="getTimePeriod(dataSet)">
-    <option value="" disabled>Select a Template</option>
+    <option value="" disabled>{{ 'Select a Template' | translate }}</option>
   </select>
 </div>

@@ -1,4 +1,4 @@
-var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
+var Reports = angular.module('Reports', ['ngResource', 'ngRoute','pascalprecht.translate', 'ngCookies', 'd2HeaderBar']);
 var dhisUrl;
 if(window.location.href.includes("apps"))
     dhisUrl= window.location.href.split('api/apps/')[0];
@@ -8,7 +8,7 @@ var ApiUrl = dhisUrl + 'api';
 setTimeout(function(){
     dhis2.menu.mainAppMenu.closeAll();
 }, 2000);
-Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService','EventVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, EventVizObjectService, Config, NarrativeService) {
+Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', '$translate', 'DataVizObjectService','EventVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, $translate, DataVizObjectService, EventVizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
 
     $scope.selectedDataSet= null;
@@ -24,7 +24,9 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                 $scope.showMonthlyTimePeriod = true;
             else {
                 $scope.showMonthlyTimePeriod = false;
-                alert('Weekly charts available post pilot');
+                $translate('Weekly charts available post pilot').then(function (translatedValue) {
+                    alert(translatedValue);
+                });
             }
         }
     };
@@ -42,6 +44,8 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
 
         $scope.noDataMessageShown = false;
         $scope.spinnerShown = true;
+        var all_dataviz_message;
+        
 
         if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
             $scope.user = null;
@@ -61,7 +65,10 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                   .then(function(dataVizObjects) {
                       $scope.mmrDataVizObjects = dataVizObjects;
                       $scope.mmrVizObjects.push(dataVizObjects);
-                      console.log("All dataviz", $scope.mmrDataVizObjects);
+                      $translate('All dataviz').then(function (translatedValue) {
+                          all_dataviz_message =translatedValue;
+                      });
+                      console.log(all_dataviz_message, $scope.mmrDataVizObjects);
                   })
             };
 
@@ -107,7 +114,9 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                       });
                 }
                 else
-                    alert('No data charts or tables configured for the selected template');
+                    $translate('No data charts or tables configured for the selected template').then(function (translatedValue) {
+                        alert(translatedValue);
+                    });
             };
 
             var addNarratives = function(){
@@ -131,7 +140,9 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
               .then(addNarratives);
         }
         else {
-            alert('Please select Time Period');
+            $translate('Please select Time Period').then(function (translatedValue) {
+                alert(translatedValue);
+            });
         }
     };
 } ]);
@@ -177,4 +188,42 @@ Reports.directive('yearSelect',function(){
             }
         }]
     }
+});
+
+Reports.config(function($translateProvider) {
+
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'i18n/',
+        suffix: '.json'
+    });
+
+    $translateProvider.registerAvailableLanguageKeys(
+      [ 'es', 'fr', 'en', 'pt' ],
+      {
+          'en*': 'en',
+          'es*': 'es',
+          'fr*': 'fr',
+          'pt*': 'pt',
+          '*': 'en' // must be last!
+      }
+    );
+
+    $translateProvider.fallbackLanguage([ 'en' ]);
+
+    jQuery.ajax({
+        url: ApiUrl + '/userSettings/keyUiLocale/',
+        contentType: 'text/plain',
+        method: 'GET',
+        dataType: 'text',
+        async: false
+    }).success(function(uiLocale) {
+        if( uiLocale == '' ) {
+            $translateProvider.determinePreferredLanguage();
+        }
+        else {
+            $translateProvider.use(uiLocale);
+        }
+    }).fail(function() {
+        $translateProvider.determinePreferredLanguage();
+    });
 });

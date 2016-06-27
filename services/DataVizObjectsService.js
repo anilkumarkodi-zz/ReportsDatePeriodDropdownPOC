@@ -1,6 +1,8 @@
-Reports.service('DataVizObjectService',['$http','Config', function($http, config){
+Reports.service('DataVizObjectService',['$http','Config','$translate', function($http, config, $translate){
     var failurePromise = function(){
-        alert('Fetching data failed');
+      $translate('Fetching data failed').then(function (translatedValue) {
+        alert(translatedValue);
+      });
     };
 
     this.getDataVizObjects = function(user, dataSetCode, selectedTimePeriod){

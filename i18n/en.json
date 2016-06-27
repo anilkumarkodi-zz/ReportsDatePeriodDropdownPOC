@@ -1,0 +1,18 @@
+{
+  "REPORT": "REPORT",
+  "No report is selected yet": "No report is selected yet",
+  "Template": "Template",
+  "Time Period": "Time Period",
+  "Export": "Export",
+  "Select a Template": "Select a Template",
+  "Get Report": "Get Report",
+  "Back to Top": "Back to Top",
+  "Fetching data failed": "Fetching data failed added",
+  "Could not connect to DHIS": "Could not connect to DHIS",
+  "Narrative cannot be saved for future periods": "Narrative cannot be saved for future periods",
+  "Narrative Posted": "Narrative Posted: ",
+  "Weekly charts available post pilot": "Weekly charts available post pilot",
+  "No data charts or tables configured for the selected template": "No data charts or tables configured for the selected template"
+  "Please select Time Period": "Please select Time Period",
+  "All dataviz":"All dataviz"
+}

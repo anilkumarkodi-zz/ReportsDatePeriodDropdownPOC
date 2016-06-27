@@ -1,6 +1,8 @@
-Reports.service('EventVizObjectService',['$http','Config', function($http, config){
+Reports.service('EventVizObjectService',['$http','Config','$translate', function($http, config,$translate){
     var failurePromise = function(){
-        alert('Fetching data failed');
+        $translate('Fetching data failed').then(function (translatedValue) {
+            alert(translatedValue);
+        });
     };
 
     this.getEventVizObjects = function(user, dataSetCode, selectedTimePeriod){

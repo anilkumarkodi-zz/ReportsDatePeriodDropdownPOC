@@ -4,5 +4,5 @@
 .idea
 bower_components
 *.zip
-*.conf
+nginx.conf
 .iml
