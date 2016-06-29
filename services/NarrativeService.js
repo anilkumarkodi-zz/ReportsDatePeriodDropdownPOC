@@ -1,4 +1,4 @@
-Reports.service('NarrativeService', ['$http', function ($http) {
+Reports.service('NarrativeService', ['$http','$translate', function ($http, $translate) {
     var dataSet;
     var successPromise = function (response) {
         var Narratives = response.data.dataValues ? response.data.dataValues : [];
@@ -12,26 +12,31 @@ Reports.service('NarrativeService', ['$http', function ($http) {
                     orgUnit: response.data.orgUnit,
                     value: ""
                 })
-        })
+        });
         return Narratives;
-    }
+    };
+    
     var failurePromise = function () {
-        alert('Could not connect to DHIS');
-    }
+        $translate('dhis_unavailable').then(function(translatedValue) {
+            alert(translatedValue);
+        });
+    };
     this.getNarratives = function (dataset, period, orgUnitId) {
         dataSet = dataset;
         return $http.get(ApiUrl + "/dataValueSets?dataSet=" + dataset.id + "&period=" + period + "&orgUnit=" + orgUnitId)
             .then(successPromise, failurePromise);
-    }
+    };
 
     this.saveNarratives = function (Narratives) {
         var validate = function (response) {
             if (response.data.conflicts) {
-                alert("Narrative cannot be saved for future periods.");
+                $translate('narrative_for_future_period').then(function(translatedValue) {
+                    alert(translatedValue);
+                });
                 console.log(response.data.conflicts[0].value);
             }
-        }
-        console.log("Narrative Posted: ", {dataValues: Narratives})
+        };
+        console.log("Narrative Posted: ", {dataValues: Narratives});
         return $http.post(ApiUrl + "/dataValueSets", {dataValues: Narratives}, {headers: {"Content-Type": "application/json"}})
             .then(validate, failurePromise)
     }

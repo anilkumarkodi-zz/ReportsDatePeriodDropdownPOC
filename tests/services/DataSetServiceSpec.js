@@ -51,7 +51,7 @@ describe("DataSetService", function () {
                     isResolved: Promise.resolve({})
                 }]
             };
-
+            httpMock.expectGET("i18n/en.json").respond(200,{});
             httpMock.expectGET("http://localhost:8000/api/dataSets/" + dataSet.id + ".json").respond(200, serverDataSet);
 
             var mockedSection = {
@@ -83,6 +83,7 @@ describe("DataSetService", function () {
             var dataSetId = {};
             var expectedPromise = {isError: true, status: 404, statusText: ''};
 
+            httpMock.expectGET("i18n/en.json").respond(200,{});
             httpMock.expectGET("http://localhost:8000/api/dataSets/" + dataSetId + ".json").respond(404);
 
             dataSetService.getDataSet(dataSetId).then(function (actualPromise) {

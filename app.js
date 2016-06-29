@@ -1,4 +1,4 @@
-var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
+var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'pascalprecht.translate', 'ngCookies', 'd2HeaderBar']);
 var dhisUrl;
 var dhis2;
 if (window.location.href.includes("apps"))
@@ -10,7 +10,7 @@ if (dhis2)
     setTimeout(function () {
         dhis2.menu.mainAppMenu.closeAll();
     }, 2000);
-Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scope', 'VizObjectService', 'Config', 'NarrativeService', function (userService, DataSetService, $scope, VizObjectService, Config, NarrativeService) {
+Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scope', '$translate', 'VizObjectService', 'Config', 'NarrativeService', function (userService, DataSetService, $scope, $translate, VizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
     $scope.selectedDataSet = null;
     $scope.getTimePeriod = function (dataSet) {
@@ -25,7 +25,9 @@ Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scop
                 $scope.showMonthlyTimePeriod = true;
             else {
                 $scope.showMonthlyTimePeriod = false;
-                alert('Weekly charts available post pilot');
+                $translate('report_type_unavailable').then(function(translatedValue) {
+                     alert(translatedValue);
+                });
             }
         }
     };
@@ -96,7 +98,9 @@ Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scop
                         });
                 }
                 else
-                    alert('No data charts or tables configured for the selected template');
+                    $translate('analytics_objects_unavailable').then(function(translatedValue) {
+                        alert(translatedValue);
+                    });
             };
 
             var addNarratives = function () {
@@ -119,7 +123,9 @@ Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scop
                 .then(addNarratives);
         }
         else {
-            alert('Please select Time Period');
+                $translate('time_period_selection_alert').then(function(translatedValue) {
+                alert(translatedValue);
+            });
         }
     };
 }]);
@@ -128,30 +134,30 @@ Reports.directive('monthSelect', function () {
     return {
         restrict: 'E',
         replace: true,
-        template: '<select class="form-control first-child" ng-model="$parent.selectedMonth" required><option value="" disabled selected>Select a Month</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
-        controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
+        template: '<select class="form-control first-child" ng-model="$parent.selectedMonth" required><option value="" disabled selected>{{ "default_month_option" | translate }}</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
+        controller: ["$scope","$translate", "$element", "$attrs", function (scope, translate, element, attrs) {
             scope.months = [];
-            scope.months.push({value: "01", text: 'January'});
-            scope.months.push({value: "02", text: 'February'});
-            scope.months.push({value: "03", text: 'March'});
-            scope.months.push({value: "04", text: 'April'});
-            scope.months.push({value: "05", text: 'May'});
-            scope.months.push({value: "06", text: 'June'});
-            scope.months.push({value: "07", text: 'July'});
-            scope.months.push({value: "08", text: 'August'});
-            scope.months.push({value: "09", text: 'September'});
-            scope.months.push({value: "10", text: 'October'});
-            scope.months.push({value: "11", text: 'November'});
-            scope.months.push({value: "12", text: 'December'});
+            scope.months.push({value: "01", text: translate.instant('January')});
+            scope.months.push({value: "02", text: translate.instant('February')});
+            scope.months.push({value: "03", text: translate.instant('March')});
+            scope.months.push({value: "04", text: translate.instant('April')});
+            scope.months.push({value: "05", text: translate.instant('May')});
+            scope.months.push({value: "06", text: translate.instant('June')});
+            scope.months.push({value: "07", text: translate.instant('July')});
+            scope.months.push({value: "08", text: translate.instant('August')});
+            scope.months.push({value: "09", text: translate.instant('September')});
+            scope.months.push({value: "10", text: translate.instant('October')});
+            scope.months.push({value: "11", text: translate.instant('November')});
+            scope.months.push({value: "12", text: translate.instant('December')});
         }]
-    }
+    };
 });
 
 Reports.directive('yearSelect', function () {
     return {
         restrict: 'E',
         replace: true,
-        template: '<select class="form-control" ng-model="$parent.selectedYear" required><option value="" disabled selected>Select a Year</option><option ng-selected="{{year==$parent.selectedYear}}"ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
+        template: '<select class="form-control" ng-model="$parent.selectedYear" required><option value="" disabled selected>{{ "default_year_option" | translate }}</option><option ng-selected="{{year==$parent.selectedYear}}"ng-repeat="year in years" value="{{year}}">{{year}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.years = [];
             var noOfYear = 0;
@@ -165,4 +171,41 @@ Reports.directive('yearSelect', function () {
             }
         }]
     }
+})
+Reports.config(function ($translateProvider) {
+
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'i18n/',
+        suffix: '.json'
+    });
+
+    $translateProvider.registerAvailableLanguageKeys(
+      ['es', 'fr', 'en', 'pt'],
+      {
+          'en*': 'en',
+          'es*': 'es',
+          'fr*': 'fr',
+          'pt*': 'pt',
+          '*': 'en' // must be last!
+      }
+    );
+
+    $translateProvider.fallbackLanguage(['en']);
+
+    jQuery.ajax({
+        url: ApiUrl + '/userSettings/keyUiLocale/',
+        contentType: 'text/plain',
+        method: 'GET',
+        dataType: 'text',
+        async: false
+    }).success(function (uiLocale) {
+        if (uiLocale == '') {
+            $translateProvider.determinePreferredLanguage();
+        }
+        else {
+            $translateProvider.use(uiLocale);
+        }
+    }).fail(function () {
+        $translateProvider.determinePreferredLanguage();
+    });
 });

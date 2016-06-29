@@ -89,6 +89,7 @@ describe("VizObjectService", function () {
                 jsonData: {}
             }];
 
+            httpMock.expectGET("i18n/en.json").respond(200);
             httpMock.expectGET("http://localhost:8000/api/charts.json?filter=name:ilike:" + dataSetCode).respond(200, serverData);
             httpMock.expectGET("http://localhost:8000/api/reportTables.json?filter=name:ilike:" + dataSetCode).respond(200, serverData);
             httpMock.expectGET("http://localhost:8000/api/eventCharts.json?filter=name:ilike:" + dataSetCode).respond(200, serverData);
@@ -103,7 +104,7 @@ describe("VizObjectService", function () {
                 expect(actualVizObjects).toEqual(expectedVizObjects);
                 done();
             });
-            httpMock.flush(4);
+            httpMock.flush(5);
             setTimeout($rootScope.$digest, 900);
         });
 
@@ -113,13 +114,17 @@ describe("VizObjectService", function () {
             var user = {};
             spyOn(window, "alert");
 
+            httpMock.expectGET("i18n/en.json").respond(200);
             httpMock.expectGET("http://localhost:8000/api/charts.json?filter=name:ilike:" + dataSetCode).respond(404);
             httpMock.expectGET("http://localhost:8000/api/reportTables.json?filter=name:ilike:" + dataSetCode).respond(404);
             httpMock.expectGET("http://localhost:8000/api/eventCharts.json?filter=name:ilike:" + dataSetCode).respond(404);
             httpMock.expectGET("http://localhost:8000/api/eventReports.json?filter=name:ilike:" + dataSetCode).respond(404);
 
             vizObjectService.getVizObjects(user, dataSetCode, selectedTimePeriod).isResolved.then(function () {
-                expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
+                setTimeout(function(){
+                    $rootScope.digest;
+                    expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
+                }, 100);
                 done();
             });
             httpMock.flush();

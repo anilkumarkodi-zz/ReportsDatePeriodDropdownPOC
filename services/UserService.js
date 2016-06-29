@@ -1,8 +1,10 @@
-Reports.service('UserService', ['$http', function ($http) {
+Reports.service('UserService', ['$http','$translate', function ($http, $translate) {
     this.getLoggedInUser = function () {
 
         var failurePromise = function () {
-            alert('Fetching data failed');
+            $translate('data_fetch_failed').then(function(translatedValue) {
+                alert(translatedValue);
+            });
         };
 
         var UserOrgUnit = function (data) {
@@ -12,7 +14,7 @@ Reports.service('UserService', ['$http', function ($http) {
             orgUnit.level = data.level;
             orgUnit.dataSets = data.dataSets;
             return orgUnit;
-        }
+        };
 
         var getOrganisationUnit = function (orgUnit) {
             var successPromise = function (response) {
@@ -35,7 +37,7 @@ Reports.service('UserService', ['$http', function ($http) {
                 .then(function (organisationUnits) {
                     user.orgUnit = _.minBy(organisationUnits, function (organisationUnit) {
                         return organisationUnit.level;
-                    })
+                    });
                     return user;
                 });
         };
