@@ -54,23 +54,23 @@
 	<body ng-controller="ReportsController" class="report-body-wrapper">
         <div class="header-wrapper">
             <d2-header-bar class="noprint"></d2-header-bar>
-            <h1 align="center">{{ 'REPORT' | translate }}</h1>
+            <h1 align="center">REPORT</h1>
             <div class="header-section-wrapper">
                 <div class="template-selection-wrapper">
                     <template-select></template-select>
                 </div>
                 <div class="period-selection-wrapper" ng-if="showMonthlyTimePeriod">
-                    <h4 class="f-weight-900">{{ 'Time Period' | translate }}</h4>
+                    <h4 class="f-weight-900">Time Period</h4>
                     <div class="period-selection-container">
                         <month-select></month-select>
                         <year-select></year-select>
                     </div>
                     <button class="btn btn-primary" ng-click="getReport()">
-                        {{ 'Get Report' | translate }}
+                        Get Report
                     </button>
 
                     <button id="export" type="button" class="btn btn-primary header-action-button" ng-show="reportShown">
-                        <span class="glyphicon glyphicon-share"></span> {{ 'Export' | translate }}
+                        <span class="glyphicon glyphicon-share"></span> Export
                     </button>
 
                 </div>
@@ -102,7 +102,7 @@
         </div>
 
         <div class="no-data-wrapper" ng-show="noDataMessageShown">
-            <h3>{{ 'No report is selected yet' | translate }}</h3>
+            <h3>No report is selected yet</h3>
         </div>
         
         <div class="spinner-wrapper" ng-show="spinnerShown">
@@ -111,7 +111,7 @@
 
         <div ng-show="reportShown" class="page-action-wrapper">
             <button id="backToTop" type="button" class="btn btn-primary">
-                <span class="glyphicon glyphicon-triangle-top"></span> {{ 'Back to Top' | translate }}
+                <span class="glyphicon glyphicon-triangle-top"></span> Back to Top
             </button>
         </div>
 

@@ -1,10 +1,8 @@
-Reports.service('UserService',['$http','Config','$translate', function($http, config, $translate){
+Reports.service('UserService',['$http','Config', function($http, config){
    this.getLoggedInUser = function(){
 
        var failurePromise = function(){
-         $translate('Fetching data failed').then(function (translatedValue) {
-          alert(translatedValue);
-         });
+           alert('Fetching data failed');
        };
 
        var isOperationalUnit = function(orgUnit){

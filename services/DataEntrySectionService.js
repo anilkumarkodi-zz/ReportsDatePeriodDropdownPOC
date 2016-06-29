@@ -1,8 +1,6 @@
-Reports.service("DataEntrySectionService", ['$http','$translate','DataElementService', function ($http, $translate, DataElementService) {
+Reports.service("DataEntrySectionService", ['$http','DataElementService', function ($http, DataElementService) {
     var failurePromise = function(response){
-        $translate('Could not connect to DHIS').then(function (translatedValue) {
-            alert(translatedValue);
-        });
+        alert("Could not connect to DHIS");
     };
 
     var Section = function(data){
@@ -20,7 +18,7 @@ Reports.service("DataEntrySectionService", ['$http','$translate','DataElementSer
                     });
             })
         });
-        section.isResolved = Promise.all(promises);
+        section.isResolved = Promise.all(promises)
         return section;
     };
     this.getSection = function(section, dataVizObjects){
