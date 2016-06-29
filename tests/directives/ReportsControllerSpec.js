@@ -3,6 +3,7 @@ describe("ReportsController", function () {
     var scope;
     var _$rootScope;
     var mockedDataset;
+    var httpMock;
 
     beforeEach(function () {
         module("Reports");
@@ -85,10 +86,11 @@ describe("ReportsController", function () {
         });
     });
 
-    beforeEach(inject(function (_$controller_, $rootScope) {
+    beforeEach(inject(function (_$controller_, $rootScope, $httpBackend) {
         _$rootScope = $rootScope;
         scope = _$rootScope.$new();
         $controller = _$controller_;
+        httpMock = $httpBackend;
     }));
 
     beforeEach(function () {
@@ -96,10 +98,19 @@ describe("ReportsController", function () {
     });
 
     describe("getReport", function () {
-        it("should give an alert when month and year are not selected for the report", function () {
+        it("should give an alert when month and year are not selected for the report", function (done) {
+            httpMock.expectGET("i18n/en.json").respond(200,{
+                "time_period_selection_alert": "Please select Time Period"
+            });
             spyOn(window, "alert");
             scope.getReport();
-            expect(window.alert).toHaveBeenCalledWith("Please select Time Period");
+            httpMock.flush();
+            setTimeout(function(){
+                _$rootScope.$digest
+                expect(window.alert).toHaveBeenCalledWith("Please select Time Period");
+                done();
+            }, 100);
+
         });
 
         it("should get the report for the selected month and year", function (done) {
@@ -123,12 +134,20 @@ describe("ReportsController", function () {
         });
 
         it("should give an alert for WMR", function (done) {
+            httpMock.expectGET("i18n/en.json").respond(200,{
+                "report_type_unavailable": "Weekly charts available post pilot"
+            });
+
             mockedDataset.code = "WMR";
             spyOn(window, "alert");
             scope.getTimePeriod(mockedDataset);
+            httpMock.flush();
             expect(scope.showMonthlyTimePeriod).toBe(false);
-            expect(window.alert).toHaveBeenCalledWith("Weekly charts available post pilot");
-            done();
+            setTimeout(function(){
+                _$rootScope.$digest
+                expect(window.alert).toHaveBeenCalledWith("Weekly charts available post pilot");
+                done();
+            }, 100);
         });
     });
 
@@ -152,8 +171,10 @@ describe("ReportsController", function () {
     describe("monthSelect", function () {
         var $scope;
         beforeEach(inject(function ($rootScope, $compile) {
+            httpMock.expectGET("i18n/en.json").respond(200,{});
             $scope = $rootScope.$new();
             var element = angular.element("<month-select></month-select>");
+            httpMock.flush();
             $compile(element)($scope);
             $scope.$digest();
         }));
@@ -166,8 +187,10 @@ describe("ReportsController", function () {
     describe("yearSelect", function () {
         var $scope;
         beforeEach(inject(function ($rootScope, $compile) {
+            httpMock.expectGET("i18n/en.json").respond(200,{});
             $scope = $rootScope.$new();
             var element = angular.element("<year-select></year-select>");
+            httpMock.flush();
             $compile(element)($scope);
             $scope.$digest();
         }));

@@ -35,7 +35,9 @@ describe("UserService", function () {
                     dataSets: []
                 }
             };
-
+            httpMock.expectGET("i18n/en.json").respond(200,{
+                "data_fetch_failed": "Fetching data failed added"
+            });
             httpMock.expectGET("http://localhost:8000/api/me.json").respond(200, serverData);
             httpMock.expectGET("http://localhost:8000/api/organisationUnits/" + serverData.organisationUnits[0].id + ".json").respond(200, serverData.organisationUnits[0]);
             userService.getLoggedInUser().then(function (actualUser) {
@@ -46,11 +48,19 @@ describe("UserService", function () {
             setInterval($rootScope.$digest, 900);
         });
 
-        it("should get the failure promise when server not responded", function () {
+        it("should get the failure promise when server not responded", function (done) {
             spyOn(window, "alert");
+            httpMock.expectGET("i18n/en.json").respond(200,{
+                "data_fetch_failed": "Fetching data failed"
+            });
             httpMock.expectGET("http://localhost:8000/api/me.json").respond(404);
             userService.getLoggedInUser().then(function () {
-                expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
+                setTimeout(function(){
+                    $rootScope.digest;
+                    expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
+                    done();
+                }, 100);
+
             });
             httpMock.flush();
         });

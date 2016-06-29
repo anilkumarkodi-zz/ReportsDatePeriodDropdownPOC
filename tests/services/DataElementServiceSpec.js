@@ -29,7 +29,7 @@ describe("DataElementService", function () {
                 name: "Karma",
                 type: "TEXT"
             };
-
+            httpMock.expectGET("i18n/en.json").respond(200,{});
             httpMock.expectGET("http://localhost:8000/api/dataElements/" + dataElement.id + ".json").respond(200, serverDataElement);
             dataElementService.getDataElement(dataElement).then(function (actualDataElement) {
                 expectedDataElement.isResolved = actualDataElement.isResolved;
@@ -43,6 +43,7 @@ describe("DataElementService", function () {
                 id: "1234"
             };
             var expectedPromise = {isError: true, status: 404, statusText: ''};
+            httpMock.expectGET("i18n/en.json").respond(200,{});
             httpMock.expectGET("http://localhost:8000/api/dataElements/" + dataElement.id + ".json").respond(404);
             dataElementService.getDataElement(dataElement).then(function (actualPromise) {
                 expect(expectedPromise).toEqual(actualPromise)

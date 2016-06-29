@@ -61,8 +61,8 @@ describe("DataEntrySectionService", function () {
                 isResolved: Promise.resolve({})
             };
 
+            httpMock.expectGET("i18n/en.json").respond(200);
             httpMock.expectGET("http://localhost:8000/api/sections/" + section.id + ".json").respond(200, serverSection);
-
             dataEntrySectionService.getSection(section.id).then(function (actualSection) {
                 actualSection.isResolved.then(function () {
                     expectedSection.isResolved = actualSection.isResolved;
@@ -73,14 +73,22 @@ describe("DataEntrySectionService", function () {
             httpMock.flush();
         });
 
-        it("should get the failure response when section object not found", function () {
+        it("should get the failure response when section object not found", function (done) {
             var section = {
                 id: "123"
             };
             spyOn(window, 'alert');
+            httpMock.expectGET("i18n/en.json").respond(200,{
+                "dhis_unavailable": "Could not connect to DHIS"
+            });
             httpMock.expectGET("http://localhost:8000/api/sections/" + section.id + ".json").respond(404);
             dataEntrySectionService.getSection(section.id).then(function () {
-                expect(window.alert).toHaveBeenCalledWith("Could not connect to DHIS")
+
+                setTimeout(function(){
+                    expect(window.alert).toHaveBeenCalledWith("Could not connect to DHIS");
+                    done();
+                }, 100);
+
             });
             httpMock.flush();
         });

@@ -53,23 +53,23 @@
 <body ng-controller="ReportsController" class="report-body-wrapper">
 <div class="header-wrapper">
     <d2-header-bar class="noprint"></d2-header-bar>
-    <h1 align="center">REPORT</h1>
+    <h1 align="center">{{ 'report_header' | translate }}</h1>
     <div class="header-section-wrapper">
         <div class="template-selection-wrapper">
             <template-select></template-select>
         </div>
         <div class="period-selection-wrapper" ng-if="showMonthlyTimePeriod">
-            <h4 class="f-weight-900">Time Period</h4>
+            <h4 class="f-weight-900">{{ 'time_period' | translate }}</h4>
             <div class="period-selection-container">
                 <month-select></month-select>
                 <year-select></year-select>
             </div>
             <button class="btn btn-primary" ng-click="getReport()">
-                Get Report
+                {{ 'get_report' | translate }}
             </button>
 
             <button id="export" type="button" class="btn btn-primary header-action-button" ng-show="reportShown">
-                <span class="glyphicon glyphicon-share"></span> Export
+                <span class="glyphicon glyphicon-share"></span> {{ 'export' | translate }}
             </button>
 
         </div>
@@ -94,25 +94,23 @@
         <div class="form-group report-content">
             <div class="narrative-container" ng-repeat="dataElement in section.dataElements">
                 <h5 class="f-weight-900">{{dataElement.name}}</h5>
-                <textarea class="form-control" rows="5" cols="10" ng-change="saveReport(this)"
-                          ng-model="narratives[dataElement.id].value" placeholder="Write your narrative here..."
-                          ng-keyup="calculateHeight($event)"></textarea>
+                <textarea class="form-control" rows="5" cols="10" ng-change="saveReport(this)" ng-model="narratives[dataElement.id].value" placeholder='{{ "narrative_placeholder" | translate }}' ng-keyup="calculateHeight($event)"></textarea>
             </div>
         </div>
     </div>
 </div>
 
 <div class="no-data-wrapper" ng-show="noDataMessageShown">
-    <h3>No report is selected yet</h3>
+    <h3>{{ 'initial_info_on_load' | translate }}</h3>
 </div>
 
 <div class="spinner-wrapper" ng-show="spinnerShown">
-    <img src="./img/spinner.gif" alt="Loading reports.......">
+    <img src="./img/spinner.gif" alt='{{ "spinner_shown_message" | translate }}'>
 </div>
 
 <div ng-show="reportShown" class="page-action-wrapper">
     <button id="backToTop" type="button" class="btn btn-primary">
-        <span class="glyphicon glyphicon-triangle-top"></span> Back to Top
+        <span class="glyphicon glyphicon-triangle-top"></span> {{ 'move_to_top' | translate }}
     </button>
 </div>
 

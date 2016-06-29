@@ -1,6 +1,8 @@
-Reports.service('VizObjectService', ['$http', 'Config', function ($http, config) {
+Reports.service('VizObjectService', ['$http', 'Config','$translate', function ($http, config,$translate) {
     var failurePromise = function () {
-        alert('Fetching data failed');
+        $translate('data_fetch_failed').then(function(translatedValue) {
+            alert(translatedValue);
+        });
     };
     this.getVizObjects = function (user, dataSetCode, selectedTimePeriod) {
         var vizObjects = [];
@@ -89,11 +91,10 @@ Reports.service('VizObjectService', ['$http', 'Config', function ($http, config)
         promises.push(getReportTables());
         promises.push(getEventCharts());
         promises.push(getEventReportTables());
-        vizObjects.isResolved = Promise.all(promises)
+        return vizObjects.isResolved = Promise.all(promises)
             .then(function () {
                 return _.flatten(vizObjects);
             })
             .then(getReportTablesJson);
-        return vizObjects;
     };
 }]);
