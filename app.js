@@ -1,26 +1,27 @@
 var Reports = angular.module('Reports', ['ngResource', 'ngRoute', 'ngCookies', 'd2HeaderBar']);
 var dhisUrl;
-if(window.location.href.includes("apps"))
-    dhisUrl= window.location.href.split('api/apps/')[0];
+var dhis2;
+if (window.location.href.includes("apps"))
+    dhisUrl = window.location.href.split('api/apps/')[0];
 else
-    dhisUrl= "http://localhost:8000/";
+    dhisUrl = "http://localhost:8000/";
 var ApiUrl = dhisUrl + 'api';
-setTimeout(function(){
-    dhis2.menu.mainAppMenu.closeAll();
-}, 2000);
-Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope', 'DataVizObjectService','EventVizObjectService', 'Config', 'NarrativeService', function(userService, DataSetService, $scope, DataVizObjectService, EventVizObjectService, Config, NarrativeService) {
+if (dhis2)
+    setTimeout(function () {
+        dhis2.menu.mainAppMenu.closeAll();
+    }, 2000);
+Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scope', 'VizObjectService', 'Config', 'NarrativeService', function (userService, DataSetService, $scope, VizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
-
-    $scope.selectedDataSet= null;
-    $scope.getTimePeriod = function(dataSet){
+    $scope.selectedDataSet = null;
+    $scope.getTimePeriod = function (dataSet) {
         $scope.reportShown = false;
         $scope.noDataMessageShown = true;
         $scope.spinnerShown = false;
 
-        if(dataSet != undefined){
+        if (dataSet != undefined) {
             $scope.isShow = false;
-            $scope.selectedDataSet=dataSet;
-            if( dataSet.code.startsWith(Config.dataSetMonthlyObjectCodePrefix) )
+            $scope.selectedDataSet = dataSet;
+            if (dataSet.code.startsWith(Config.dataSetMonthlyObjectCodePrefix))
                 $scope.showMonthlyTimePeriod = true;
             else {
                 $scope.showMonthlyTimePeriod = false;
@@ -38,85 +39,73 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
 
     };
 
-    $scope.getReport = function(){
-
+    $scope.getReport = function () {
         $scope.noDataMessageShown = false;
         $scope.spinnerShown = true;
-
-        if($scope.selectedMonth!=undefined && $scope.selectedYear!=undefined) {
+        if ($scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
-            $scope.mmrDataVizObjects = []
-            $scope.mmrEventVizObjects = []
-            $scope.mmrFilteredDataVizObjects = []
-            $scope.saveReport = function(textArea){
+            $scope.saveReport = function (textArea) {
                 NarrativeService.saveNarratives([$scope.narratives[textArea.dataElement.id]]);
             }
             $scope.isShow = true;
             $scope.mmrVizObjects = [];
-            var getDataVizObjects = function(user) {
-                $scope.user = user;
-                var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
-                return DataVizObjectService.getDataVizObjects(user, $scope.selectedDataSet.code, selectedTimePeriod)
-                  .then(function(dataVizObjects) {
-                      $scope.mmrDataVizObjects = dataVizObjects;
-                      $scope.mmrVizObjects.push(dataVizObjects);
-                      console.log("All dataviz", $scope.mmrDataVizObjects);
-                  })
-            };
 
-            var getEventVizObjects = function() {
-                var selectedTimePeriod=$scope.selectedYear+"-"+$scope.selectedMonth;
-                return EventVizObjectService.getEventVizObjects($scope.user, $scope.selectedDataSet.code, selectedTimePeriod)
-                    .then(function(eventVizObjects) {
-                        $scope.mmrEventVizObjects = eventVizObjects;
-                        $scope.mmrVizObjects.push(eventVizObjects);
+            var getVizObjects = function (user) {
+                $scope.user = user;
+                var selectedTimePeriod = $scope.selectedYear + "-" + $scope.selectedMonth;
+                return VizObjectService.getVizObjects(user, $scope.selectedDataSet.code, selectedTimePeriod)
+                    .then(function (vizObjects) {
+                        $scope.mmrVizObjects.push(vizObjects);
+                        console.log("All Viz Objects", $scope.mmrVizObjects);
                     })
             };
 
-            var processSection = function(dataSection){
+            var processSection = function (dataSection) {
                 dataSection.charts = [];
                 dataSection.reportTables = [];
                 dataSection.eventCharts = [];
                 dataSection.eventReports = [];
-                return _.filter(_.flatten($scope.mmrVizObjects), function(dataVizObject) {
-                    if(( (dataVizObject.name).indexOf(dataSection.code) > -1 )) {
-                        if(((dataVizObject.href).indexOf("charts") > -1 || (dataVizObject.href).indexOf("eventCharts") > -1) ) {
-                            dataVizObject.href = dataVizObject.href + "/data?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
-                            dataSection.charts.push(dataVizObject);
+                return _.map(_.flatten($scope.mmrVizObjects), function (vizObject) {
+                    if (( (vizObject.name).indexOf(dataSection.code) > -1 )) {
+                        if (((vizObject.href).indexOf("charts") > -1 || (vizObject.href).indexOf("eventCharts") > -1)) {
+                            vizObject.href = vizObject.href + "/data?date=" + $scope.selectedYear + "-" + $scope.selectedMonth;
+                            dataSection.charts.push(vizObject);
                         }
-                        else {
-                            dataVizObject.href = dataVizObject.href + "/data.html?date="+$scope.selectedYear+"-"+$scope.selectedMonth;
-                            dataSection.reportTables.push(dataVizObject);
+                        else if ((vizObject.href).indexOf("reportTables") > -1) {
+                            vizObject.href = vizObject.href + "/data.html?date=" + $scope.selectedYear + "-" + $scope.selectedMonth;
+                            dataSection.reportTables.push(vizObject);
                         }
+                        else
+                            alert("event reports later");
                     }
                     return dataSection;
-                })[ 0 ];
+                })[0];
             };
 
-            var assignDataVizObjectsToDataSet = function() {
-                if( $scope.mmrVizObjects.length != 0 ) {
+            var assignVizObjectsToDataSet = function () {
+                if ($scope.mmrVizObjects.length != 0) {
                     return DataSetService.getDataSet($scope.selectedDataSet.id)
-                      .then(function(dataset) {
-                          return dataset.isResolved.then(function(){
-                              _.map(dataset.sections, function(dataSection) {
-                                  processSection(dataSection);
-                              });
-                              $scope.mmrDataSet = dataset;
-                          });
-                      });
+                        .then(function (dataset) {
+                            return dataset.isResolved.then(function () {
+                                _.map(dataset.sections, function (dataSection) {
+                                    processSection(dataSection);
+                                });
+                                $scope.mmrDataSet = dataset;
+                            });
+                        });
                 }
                 else
                     alert('No data charts or tables configured for the selected template');
             };
 
-            var addNarratives = function(){
-                DataSetService.getDataSet($scope.selectedDataSet.id)
-                    .then(function(selectedDataSet){
-                        NarrativeService.getNarratives(selectedDataSet, $scope.selectedYear+$scope.selectedMonth, $scope.user.project.id)
-                            .then(function(Narratives){
-                                $scope.narratives ={};
-                                _.map(Narratives, function(narrative){
+            var addNarratives = function () {
+                return DataSetService.getDataSet($scope.selectedDataSet.id)
+                    .then(function (selectedDataSet) {
+                        NarrativeService.getNarratives(selectedDataSet, $scope.selectedYear + $scope.selectedMonth, $scope.user.orgUnit.id)
+                            .then(function (Narratives) {
+                                $scope.narratives = {};
+                                _.map(Narratives, function (narrative) {
                                     $scope.narratives[narrative.dataElement] = narrative;
                                 })
                                 $scope.spinnerShown = false;
@@ -124,42 +113,41 @@ Reports.controller('ReportsController',['UserService', 'DataSetService', '$scope
                             });
                     })
             }
-            userService.getLoggedInUser()
-              .then(getDataVizObjects)
-              .then(getEventVizObjects)
-              .then(assignDataVizObjectsToDataSet)
-              .then(addNarratives);
+            return userService.getLoggedInUser()
+                .then(getVizObjects)
+                .then(assignVizObjectsToDataSet)
+                .then(addNarratives);
         }
         else {
             alert('Please select Time Period');
         }
     };
-} ]);
+}]);
 
-Reports.directive('monthSelect',function(){
+Reports.directive('monthSelect', function () {
     return {
         restrict: 'E',
         replace: true,
         template: '<select class="form-control first-child" ng-model="$parent.selectedMonth" required><option value="" disabled selected>Select a Month</option><option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option></select>',
         controller: ["$scope", "$element", "$attrs", function (scope, element, attrs) {
             scope.months = [];
-            scope.months.push({value:"01", text:'January'});
-            scope.months.push({value:"02", text:'February'});
-            scope.months.push({value:"03", text:'March'});
-            scope.months.push({value:"04", text:'April'});
-            scope.months.push({value:"05", text:'May'});
-            scope.months.push({value:"06", text:'June'});
-            scope.months.push({value:"07", text:'July'});
-            scope.months.push({value:"08", text:'August'});
-            scope.months.push({value:"09", text:'September'});
-            scope.months.push({value:"10", text:'October'});
-            scope.months.push({value:"11", text:'November'});
-            scope.months.push({value:"12", text:'December'});
+            scope.months.push({value: "01", text: 'January'});
+            scope.months.push({value: "02", text: 'February'});
+            scope.months.push({value: "03", text: 'March'});
+            scope.months.push({value: "04", text: 'April'});
+            scope.months.push({value: "05", text: 'May'});
+            scope.months.push({value: "06", text: 'June'});
+            scope.months.push({value: "07", text: 'July'});
+            scope.months.push({value: "08", text: 'August'});
+            scope.months.push({value: "09", text: 'September'});
+            scope.months.push({value: "10", text: 'October'});
+            scope.months.push({value: "11", text: 'November'});
+            scope.months.push({value: "12", text: 'December'});
         }]
     }
 });
 
-Reports.directive('yearSelect',function(){
+Reports.directive('yearSelect', function () {
     return {
         restrict: 'E',
         replace: true,

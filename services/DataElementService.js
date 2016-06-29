@@ -1,5 +1,5 @@
-Reports.service("DataElementService", ['$http',function ($http) {
-    var failurePromise = function(response){
+Reports.service("DataElementService", ['$http', function ($http) {
+    var failurePromise = function (response) {
         return {isError: true, status: response.status, statusText: response.statusText}
     };
 
@@ -14,8 +14,8 @@ Reports.service("DataElementService", ['$http',function ($http) {
 
     };
 
-    this.getDataElement = function(incompleteDataElement){
-        var successPromise = function(response){
+    this.getDataElement = function (incompleteDataElement) {
+        var successPromise = function (response) {
             return (new DataElement(response.data))
         };
 
