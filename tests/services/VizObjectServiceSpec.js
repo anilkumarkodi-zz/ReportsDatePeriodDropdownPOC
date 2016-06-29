@@ -95,7 +95,7 @@ describe("VizObjectService", function () {
             httpMock.expectGET("http://localhost:8000/api/eventCharts.json?filter=name:ilike:" + dataSetCode).respond(200, serverData);
             httpMock.expectGET("http://localhost:8000/api/eventReports.json?filter=name:ilike:" + dataSetCode).respond(200, serverData);
 
-            vizObjectService.getVizObjects(user, dataSetCode, selectedTimePeriod).isResolved.then(function (actualVizObjects) {
+            vizObjectService.getVizObjects(user, dataSetCode, selectedTimePeriod).then(function (actualVizObjects) {
                 httpMock.expectGET("http://localhost:8000/api/charts/1/data.json").respond(200, serverData.chartsData);
                 httpMock.expectGET("http://localhost:8000/api/reportTables/12/data.json?date=" + selectedTimePeriod).respond(200, serverData.reportTableData);
                 httpMock.flush(1);
@@ -120,7 +120,7 @@ describe("VizObjectService", function () {
             httpMock.expectGET("http://localhost:8000/api/eventCharts.json?filter=name:ilike:" + dataSetCode).respond(404);
             httpMock.expectGET("http://localhost:8000/api/eventReports.json?filter=name:ilike:" + dataSetCode).respond(404);
 
-            vizObjectService.getVizObjects(user, dataSetCode, selectedTimePeriod).isResolved.then(function () {
+            vizObjectService.getVizObjects(user, dataSetCode, selectedTimePeriod).then(function () {
                 setTimeout(function(){
                     $rootScope.digest;
                     expect(window.alert).toHaveBeenCalledWith("Fetching data failed");
