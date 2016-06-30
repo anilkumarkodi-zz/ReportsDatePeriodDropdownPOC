@@ -4,6 +4,7 @@ describe("ReportsController", function () {
     var _$rootScope;
     var mockedDataset;
     var httpMock;
+    var mockedNarrativeService;
 
     beforeEach(function () {
         module("Reports");
@@ -72,9 +73,12 @@ describe("ReportsController", function () {
             value: ''
         }];
 
-        var mockedNarrativeService = {
+        mockedNarrativeService = {
             getNarratives: function () {
                 return Promise.resolve(mockedNarratives);
+            },
+            saveNarratives : function () {
+              return Promise.resolve(mockedNarratives);
             }
         };
 
@@ -199,4 +203,19 @@ describe("ReportsController", function () {
             expect($scope.years.length).toBe(2);
         });
     });
+    
+    describe("saveReport", function(){
+        it("should save reports", function(){
+             var textArea  = {
+                 dataElement:{
+                     id:"1"
+                 }
+             };
+            spyOn(mockedNarrativeService,'saveNarratives');
+            scope.saveReport(textArea);
+            expect(mockedNarrativeService.saveNarratives).toHaveBeenCalled();
+
+
+        });
+    })
 });

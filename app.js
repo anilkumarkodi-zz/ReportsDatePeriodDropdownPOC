@@ -13,6 +13,7 @@ if (dhis2)
 Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scope', '$translate', 'VizObjectService', 'Config', 'NarrativeService', function (userService, DataSetService, $scope, $translate, VizObjectService, Config, NarrativeService) {
     $scope.noDataMessageShown = true;
     $scope.selectedDataSet = null;
+    $scope.narratives = {};
     $scope.getTimePeriod = function (dataSet) {
         $scope.reportShown = false;
         $scope.noDataMessageShown = true;
@@ -41,15 +42,16 @@ Reports.controller('ReportsController', ['UserService', 'DataSetService', '$scop
 
     };
 
+    $scope.saveReport = function (textArea) {
+        NarrativeService.saveNarratives([$scope.narratives[textArea.dataElement.id]]);
+    }
+
     $scope.getReport = function () {
         $scope.noDataMessageShown = false;
         $scope.spinnerShown = true;
         if ($scope.selectedMonth != undefined && $scope.selectedYear != undefined) {
             $scope.user = null;
             $scope.mmrDataSet = {}
-            $scope.saveReport = function (textArea) {
-                NarrativeService.saveNarratives([$scope.narratives[textArea.dataElement.id]]);
-            }
             $scope.isShow = true;
             $scope.mmrVizObjects = [];
 

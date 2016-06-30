@@ -94,7 +94,7 @@
         <div class="form-group report-content">
             <div class="narrative-container" ng-repeat="dataElement in section.dataElements">
                 <h5 class="f-weight-900">{{dataElement.name}}</h5>
-                <textarea class="form-control" rows="5" cols="10" ng-change="saveReport(this)" ng-model="narratives[dataElement.id].value" placeholder='{{ "narrative_placeholder" | translate }}' ng-keyup="calculateHeight($event)"></textarea>
+                <textarea class="form-control" rows="5" cols="10" ng-change="saveReport(this)" ng-model-options="{debounce:1000}" ng-model="narratives[dataElement.id].value" placeholder='{{ "narrative_placeholder" | translate }}' ng-keyup="calculateHeight($event)"></textarea>
             </div>
         </div>
     </div>
